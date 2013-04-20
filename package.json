@@ -1,0 +1,32 @@
+{
+   "name":"metainspector",
+   "description":"",
+   "version":"0.0.1",
+   "homepage":"http://github.com/gabceb/node-metainspector",
+   "repository":"git://github.com/gabceb/node-metainspector.git",
+   "author":"Gabriel Cebrian <gabceb@gmail.com> (http://about.com/gabceb)",
+   "main":"./index.js",
+   
+   "dependencies":{
+      
+   },
+   "devDependencies":{
+      "mocha":"*",
+      "mocha-phantomjs": "*",
+      "should":"*",
+      "component":"*",
+      "uglify-js":"*"
+   },
+   "scripts":{
+      "test":"make test"
+   },
+   "engines":{
+      "node":">= 0.4.0"
+   },
+   "licenses":[
+      {
+         "type":"MIT",
+         "url":"http://github.com/gabceb/node-metainspector/raw/master/LICENSE"
+      }
+   ]
+}
