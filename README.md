@@ -1,52 +1,48 @@
 ![status](https://secure.travis-ci.org/gabceb/node-metainspector.png?branch=master)
 
-## Information
+## Metainspector
 
-<table>
-<tr> 
-<td>Package</td><td>Metainspector</td>
-</tr>
-<tr>
-<td>Description</td>
-<td>MetaInspector is an npm for web scraping purposes. You give it an URL, and it lets you easily get its title, links, images, charset, description, keywords, meta tags.... Metainspector is inspired by the Metainspector gem by [jaimeiniesta](https://github.com/jaimeiniesta/metainspector)</td>
-</tr>
-<tr>
-<td>Node Version</td>
-<td>>= 0.4</td>
-</tr>
-</table>
+MetaInspector is an npm for web scraping purposes. You give it an URL, and it lets you easily get its title, links, images, charset, description, keywords, meta tags.... Metainspector is inspired by the Metainspector gem by [jaimeiniesta](https://github.com/jaimeiniesta/metainspector)
+
+```
+page.url                # URL of the page
+page.scheme             # Scheme of the page (http, https)
+page.host               # Hostname of the page (like, markupvalidator.com, without the scheme)
+page.root_url           # Root url (scheme + host, like http://markupvalidator.com/)
+page.title              # title of the page, as string
+page.links              # array of strings, with every link found on the page as an absolute URL
+page.internal_links     # array of strings, with every internal link found on the page as an absolute URL
+page.external_links     # array of strings, with every external link found on the page as an absolute URL
+page.meta_description   # meta description, as string
+page.description        # returns the meta description, or the first long paragraph if no meta description is found
+page.meta_keywords      # meta keywords, as string
+page.image              # Most relevant image, if defined with og:image
+page.images             # array of strings, with every img found on the page as an absolute URL
+page.feed               # Get rss or atom links in meta data fields as array
+page.meta_og_title      # opengraph title
+page.meta_og_image      # opengraph image
+page.charset            # UTF-8
+page.content_type       # content-type returned by the server when the url was requested
+```
 
 ## Usage
 
 ```javascript
-inspector = require('metainspector')
+var client = new MetaInspector("http://www.google.com", {});
+
+client.on("fetch", function(body){
+    console.log(body);
+});
+
+client.fetch();
+
 ```
 
 ## Examples
 
 You can view more examples in the [example folder.](https://github.com/gabceb/node-metainspector/tree/master/examples)
 
-## LICENSE
+## ZOMG Fork! Thank you!
+You're welcome to fork this project and send pull requests. Just remember to include tests.
 
-(MIT License)
-
-Copyright (c) 2013 Gabriel Cebrian <gabceb at gmail.com>
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Copyright (c) 2009-2012 Gabriel Cebrian, released under the MIT license
