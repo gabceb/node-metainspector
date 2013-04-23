@@ -132,8 +132,7 @@ function getSecondaryDescription()
 			if(_my.metaDescription !== undefined) return;
 
 			var text = self.parsedDocument(this).text();
-			console.log("This is the text!: " + text);
-
+			
 			// If we found a paragraph with more than
 			if(text.length >= minimum_p_length)
 			{

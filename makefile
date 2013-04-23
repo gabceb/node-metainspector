@@ -1,14 +1,11 @@
-REPORTER = List
 
 test: 
 	@./node_modules/.bin/mocha \
-		--reporter $(REPORTER) \
 		--slow 200ms \
 		--bail
 
 test-dev: 
 	@NODE_DEBUG='request metainspector' ./node_modules/.bin/mocha \
-		--reporter $(REPORTER) \
 		--slow 200ms \
 		--bail
 
