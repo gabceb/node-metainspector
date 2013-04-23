@@ -1,8 +1,10 @@
 ![status](https://secure.travis-ci.org/gabceb/node-metainspector.png?branch=master)
 
-## Metainspector
+## Node-Metainspector
 
-MetaInspector is an npm for web scraping purposes. You give it an URL, and it lets you easily get its title, links, images, charset, description, keywords, meta tags.... Metainspector is inspired by the Metainspector gem by [jaimeiniesta](https://github.com/jaimeiniesta/metainspector)
+MetaInspector is an npm package for web scraping purposes. You give it an URL, and it lets you easily get its title, links, images, description, keywords, meta tags....
+
+Metainspector is inspired by the Metainspector gem by [jaimeiniesta](https://github.com/jaimeiniesta/metainspector)
 
 ### Scraped data
 
