@@ -4,10 +4,20 @@ var util = require('util'),
 	cheerio = require('cheerio'),
 	URI = require('uri-js');
 
-var MetaInspector = function(url, opts){
+var _my = null;
+
+var debug
+if (/\bmetainspector\b/.test(process.env.NODE_DEBUG)) {
+  debug = function() {
+    console.error('METAINSPECTOR %s', util.format.apply(util, arguments))
+  }
+} else {
+  debug = function() {}
+}
+
+var MetaInspector = function(url){
 	this.url = URI.normalize(withDefaultScheme(url));
-	
-	this.opts = opts || {};
+	_my = {};
 	
 	this.parsedUrl = URI.parse(this.url);
 	this.scheme = this.parsedUrl.scheme;
@@ -22,7 +32,7 @@ module.exports = MetaInspector;
 MetaInspector.prototype.fetch = function(){
 	var self = this;
 
-	request(this.url, function(error, response, body){
+	request({uri : this.url}, function(error, response, body){
 		if(!error && response.statusCode == 200){
 			self.document = body
 			self.parsedDocument = cheerio.load(body);
@@ -38,52 +48,136 @@ MetaInspector.prototype.fetch = function(){
 	});
 };
 
-MetaInspector.prototype.title = function(){
-	return this.parsed_document('title').text();
-};
-
 function initAllProperties()
 {
-	this.title = getTitle.apply(this);
-	this.links = getLinks.apply(this);
-	this.description = getDescription.apply(this) || getSecondaryDescription.apply(this);
+	this.title = getTitle.bind(this);
+
+	this.links = getLinks.bind(this);
+	this.metaDescription = getMetaDescription.bind(this);
+	this.description = getDescription.bind(this);
+	this.image = getImage.bind(this);
+	this.feeds = getFeeds.bind(this);
+	this.ogTitle = getOgTitle.bind(this);
 }
 
 function getTitle()
 {
-	return this.parsedDocument('title').text();
+	debug("Parsing page title");
+
+	if(_my.title === undefined)
+	{
+		_my.title = this.parsedDocument('title').text();
+	}
+	 
+	return _my.title;
+}
+
+function getOgTitle()
+{
+	debug("Parsing page Open Graph title");
+
+	if(_my.ogTitle === undefined)
+	{
+		_my.ogTitle = this.parsedDocument("meta[property='og:title']").attr("content");
+	}
+	 
+	return _my.ogTitle;
 }
 
 function getLinks()
 {
+	debug("Parsing page links");
+
 	var self = this;
 
-	return self.parsedDocument('a').map(function(i ,elem){
-		return self.parsedDocument(this).attr('href');
-	});
+	if(_my.links === undefined)
+	{
+		_my.links = self.parsedDocument('a').map(function(i ,elem){
+			return self.parsedDocument(this).attr('href');
+		});
+	}
+
+	return _my.links;
 }
 
 function getDescription()
 {
-	return this.parsedDocument("meta[name='description']").attr("content");
+	debug("Parsing page description based on meta description or secondary description");
+	return getMetaDescription.apply(this) || getSecondaryDescription.apply(this);
+}
+
+function getMetaDescription()
+{
+	debug("Parsing page description based on meta elements");
+
+	if(_my.metaDescription === undefined)
+	{
+		_my.metaDescription = this.parsedDocument("meta[name='description']").attr("content");
+	}
+
+	return _my.metaDescription;
 }
 
 function getSecondaryDescription()
 {
-	var self = this;
-	var first_long_text = null;
-	var minimum_p_length = 120;
+	debug("Parsing page secondary description");
 
-	self.parsedDocument("p").each(function(i, elem){
-		if(first_long_text !== null) return;
-		
-		var text = this.parsedDocument(this).text();
-		// If we found a paragraph with more than
-		if(text.length >= minimum_p_length)
-		{
-			first_long_text = text;
-		}
+	var self = this;
+
+	if(_my.metaDescription === undefined)
+	{
+		var minimum_p_length = 120;
+
+		self.parsedDocument("p").each(function(i, elem){
+			if(_my.metaDescription !== undefined) return;
+
+			var text = self.parsedDocument(this).text();
+			console.log("This is the text!: " + text);
+
+			// If we found a paragraph with more than
+			if(text.length >= minimum_p_length)
+			{
+				_my.metaDescription = text;
+			}
+		});
+	}
+
+	return _my.metaDescription;
+}
+
+function getImage()
+{
+	debug("Parsing page image based on the Open Graph image");
+
+	if(_my.metaImage === undefined)
+	{
+		_my.metaImage = this.parsedDocument("meta[property='og:image']").attr("content");
+	}
+
+	return _my.metaImage;
+}
+
+function getFeeds()
+{
+	debug("Parsing page feeds based on rss or atom feeds");
+
+	if(_my.feeds === undefined)
+	{
+		_my.feeds = parseFeeds.apply(this, ["rss"]) || parseFeeds.apply(this, ["atom"])
+	}
+
+	return _my.feeds;
+}
+
+function parseFeeds(format)
+{
+	var self = this;
+
+	var feeds = this.parsedDocument("link[type='application/" + format + "+xml']").map(function(i ,elem){
+		return self.parsedDocument(this).attr('href');
 	});
+
+	return feeds;
 }
 
 function withDefaultScheme(url){

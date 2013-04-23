@@ -4,25 +4,21 @@
 
 MetaInspector is an npm for web scraping purposes. You give it an URL, and it lets you easily get its title, links, images, charset, description, keywords, meta tags.... Metainspector is inspired by the Metainspector gem by [jaimeiniesta](https://github.com/jaimeiniesta/metainspector)
 
+### Scraped data
+
 ```
-page.url                # URL of the page
-page.scheme             # Scheme of the page (http, https)
-page.host               # Hostname of the page (like, markupvalidator.com, without the scheme)
-page.root_url           # Root url (scheme + host, like http://markupvalidator.com/)
-page.title              # title of the page, as string
-page.links              # array of strings, with every link found on the page as an absolute URL
-page.internal_links     # array of strings, with every internal link found on the page as an absolute URL
-page.external_links     # array of strings, with every external link found on the page as an absolute URL
-page.meta_description   # meta description, as string
-page.description        # returns the meta description, or the first long paragraph if no meta description is found
-page.meta_keywords      # meta keywords, as string
-page.image              # Most relevant image, if defined with og:image
-page.images             # array of strings, with every img found on the page as an absolute URL
-page.feed               # Get rss or atom links in meta data fields as array
-page.meta_og_title      # opengraph title
-page.meta_og_image      # opengraph image
-page.charset            # UTF-8
-page.content_type       # content-type returned by the server when the url was requested
+client.url                	# URL of the page
+client.scheme             	# Scheme of the page (http, https)
+client.host               	# Hostname of the page (like, markupvalidator.com, without the scheme)
+client.rootUrl 			  	# Root url (scheme + host, i.e http://simple.com/)
+client.title              	# title of the page, as string
+client.links              	# array of strings, with every link found on the page as an absolute URL
+client.metaDescription   	# meta description, as string
+client.description        	# returns the meta description, or the first long paragraph if no meta description is found
+client.image              	# Most relevant image, if defined with og:image
+client.feeds            	# Get rss or atom links in meta data fields as array
+client.oGtitle      		# opengraph title
+
 ```
 
 ## Usage
@@ -30,17 +26,32 @@ page.content_type       # content-type returned by the server when the url was r
 ```javascript
 var client = new MetaInspector("http://www.google.com", {});
 
-client.on("fetch", function(body){
-    console.log(body);
+client.on("fetch", function(){
+    console.log("Description: " + client.description());
+
+    console.log("Links: " + client.links().join(","));
+});
+
+client.on("error", function(err){
+	console.log(error);
 });
 
 client.fetch();
 
 ```
 
-## Examples
+## TO DO
 
-You can view more examples in the [example folder.](https://github.com/gabceb/node-metainspector/tree/master/examples)
+Finish implementation of the properties below:
+
+```
+Add absolutify url function to return all urls as an absolute url
+
+client.internal_links     	# array of strings, with every internal link found on the page as an absolute URL
+client.external_links     	# array of strings, with every external link found on the page as an absolute URL
+client.images           	# array of strings, with every img found on the page as an absolute URL
+
+```
 
 ## ZOMG Fork! Thank you!
 You're welcome to fork this project and send pull requests. Just remember to include tests.

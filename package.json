@@ -4,20 +4,18 @@
    "version":"0.0.1",
    "homepage":"http://github.com/gabceb/node-metainspector",
    "repository":"git://github.com/gabceb/node-metainspector.git",
-   "author":"Gabriel Cebrian <gabceb@gmail.com> (http://about.com/gabceb)",
+   "author":"Gabriel Cebrian <gabceb@gmail.com> (http://about.me/gabceb)",
    "main":"./index.js",
    
    "dependencies":{
-      "request" : "2.16.6",
+      "request" : "2.20.0",
       "cheerio" : "0.10.8",
       "uri-js" : "1.4.2"
    },
    "devDependencies":{
       "mocha":"*",
-      "mocha-phantomjs": "*",
       "should":"*",
-      "component":"*",
-      "uglify-js":"*"
+      "node-fakeweb":"0.0.9"
    },
    "scripts":{
       "test":"make test"
