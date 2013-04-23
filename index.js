@@ -50,13 +50,25 @@ MetaInspector.prototype.fetch = function(){
 
 function initAllProperties()
 {
+	// title of the page, as string
 	this.title = getTitle.bind(this);
 
+	// array of strings, with every link found on the page
 	this.links = getLinks.bind(this);
+
+	// meta description, as string
 	this.metaDescription = getMetaDescription.bind(this);
+
+	// returns the meta description, or the first long paragraph if no meta description is found
 	this.description = getDescription.bind(this);
+
+	// Most relevant image, if defined with og:image
 	this.image = getImage.bind(this);
+
+	// Get rss or atom links in meta data fields as array
 	this.feeds = getFeeds.bind(this);
+
+	// opengraph title
 	this.ogTitle = getOgTitle.bind(this);
 }
 
