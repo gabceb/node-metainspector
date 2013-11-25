@@ -6,13 +6,29 @@ var util = require('util'),
 
 var _my = null;
 
-var debug
+var debug;
+
 if (/\bmetainspector\b/.test(process.env.NODE_DEBUG)) {
   debug = function() {
-    console.error('METAINSPECTOR %s', util.format.apply(util, arguments))
-  }
+    console.error('METAINSPECTOR %s', util.format.apply(util, arguments));
+  };
 } else {
-  debug = function() {}
+  debug = function() {};
+}
+
+function parseFeeds(format)
+{
+	var self = this;
+
+	var feeds = this.parsedDocument("link[type='application/" + format + "+xml']").map(function(i ,elem){
+		return self.parsedDocument(this).attr('href');
+	});
+
+	return feeds;
+}
+
+function withDefaultScheme(url){
+	return URI.parse(url).scheme ? url : "http://" + url;
 }
 
 var MetaInspector = function(url){
@@ -25,52 +41,9 @@ var MetaInspector = function(url){
 	this.rootUrl = this.scheme + "://" + this.host;
 };
 
-MetaInspector.prototype = new events.EventEmitter;
+MetaInspector.prototype = new events.EventEmitter();
 
 module.exports = MetaInspector;
-
-MetaInspector.prototype.fetch = function(){
-	var self = this;
-
-	request({uri : this.url}, function(error, response, body){
-		if(!error && response.statusCode == 200){
-			self.document = body
-			self.parsedDocument = cheerio.load(body);
-			self.response = response;
-
-			initAllProperties.apply(self);
-
-			self.emit("fetch");
-		}
-		else{
-			self.emit("error", error);
-		}
-	});
-};
-
-function initAllProperties()
-{
-	// title of the page, as string
-	this.title = getTitle.bind(this);
-
-	// array of strings, with every link found on the page
-	this.links = getLinks.bind(this);
-
-	// meta description, as string
-	this.metaDescription = getMetaDescription.bind(this);
-
-	// returns the meta description, or the first long paragraph if no meta description is found
-	this.description = getDescription.bind(this);
-
-	// Most relevant image, if defined with og:image
-	this.image = getImage.bind(this);
-
-	// Get rss or atom links in meta data fields as array
-	this.feeds = getFeeds.bind(this);
-
-	// opengraph title
-	this.ogTitle = getOgTitle.bind(this);
-}
 
 function getTitle()
 {
@@ -112,12 +85,6 @@ function getLinks()
 	return _my.links;
 }
 
-function getDescription()
-{
-	debug("Parsing page description based on meta description or secondary description");
-	return getMetaDescription.apply(this) || getSecondaryDescription.apply(this);
-}
-
 function getMetaDescription()
 {
 	debug("Parsing page description based on meta elements");
@@ -141,7 +108,9 @@ function getSecondaryDescription()
 		var minimum_p_length = 120;
 
 		self.parsedDocument("p").each(function(i, elem){
-			if(_my.metaDescription !== undefined) return;
+			if(_my.metaDescription !== undefined){
+				return;
+			}
 
 			var text = self.parsedDocument(this).text();
 			
@@ -154,6 +123,12 @@ function getSecondaryDescription()
 	}
 
 	return _my.metaDescription;
+}
+
+function getDescription()
+{
+	debug("Parsing page description based on meta description or secondary description");
+	return getMetaDescription.apply(this) || getSecondaryDescription.apply(this);
 }
 
 function getImage()
@@ -174,23 +149,51 @@ function getFeeds()
 
 	if(_my.feeds === undefined)
 	{
-		_my.feeds = parseFeeds.apply(this, ["rss"]) || parseFeeds.apply(this, ["atom"])
+		_my.feeds = parseFeeds.apply(this, ["rss"]) || parseFeeds.apply(this, ["atom"]);
 	}
 
 	return _my.feeds;
 }
 
-function parseFeeds(format)
+function initAllProperties()
 {
-	var self = this;
+	// title of the page, as string
+	this.title = getTitle.bind(this);
 
-	var feeds = this.parsedDocument("link[type='application/" + format + "+xml']").map(function(i ,elem){
-		return self.parsedDocument(this).attr('href');
-	});
+	// array of strings, with every link found on the page
+	this.links = getLinks.bind(this);
 
-	return feeds;
+	// meta description, as string
+	this.metaDescription = getMetaDescription.bind(this);
+
+	// returns the meta description, or the first long paragraph if no meta description is found
+	this.description = getDescription.bind(this);
+
+	// Most relevant image, if defined with og:image
+	this.image = getImage.bind(this);
+
+	// Get rss or atom links in meta data fields as array
+	this.feeds = getFeeds.bind(this);
+
+	// opengraph title
+	this.ogTitle = getOgTitle.bind(this);
 }
 
-function withDefaultScheme(url){
-	return URI.parse(url).scheme ? url : "http://" + url;
+MetaInspector.prototype.fetch = function(){
+	var self = this;
+
+	request({uri : this.url}, function(error, response, body){
+		if(!error && response.statusCode === 200){
+			self.document = body;
+			self.parsedDocument = cheerio.load(body);
+			self.response = response;
+
+			initAllProperties.apply(self);
+
+			self.emit("fetch");
+		}
+		else{
+			self.emit("error", error);
+		}
+	});
 };

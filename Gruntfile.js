@@ -14,7 +14,6 @@ module.exports = function(grunt) {
         noarg: true,
         sub: true,
         undef: true,
-        unused: true,
         boss: true,
         eqnull: true,
         globals: {
@@ -23,6 +22,7 @@ module.exports = function(grunt) {
           module: true,
           require: true,
           __dirname: true,
+          process: true,
           /*MOCHA*/
           describe: true,
           it: true,
@@ -36,7 +36,7 @@ module.exports = function(grunt) {
         src: 'Gruntfile.js'
       },
       lib_test: {
-        src: ['lib/**/*.js', 'test/**/*.js']
+        src: ['lib/**/*.js', 'test/**/*.js', 'index.js']
       }
     }
   });
