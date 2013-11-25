@@ -1,32 +1,33 @@
 {
-   "name":"node-metainspector",
-   "description":"Npm package for web scraping purposes. You give it an URL, and it lets you easily get its title, links, images, description, keywords, meta tags",
-   "version":"0.0.1",
-   "homepage":"http://github.com/gabceb/node-metainspector",
-   "repository":"git://github.com/gabceb/node-metainspector.git",
-   "author":"Gabriel Cebrian <gabceb@gmail.com> (http://about.me/gabceb)",
-   "main":"./index.js",
-   
-   "dependencies":{
-      "request" : "2.20.0",
-      "cheerio" : "0.10.8",
-      "uri-js" : "1.4.2"
-   },
-   "devDependencies":{
-      "mocha":"*",
-      "should":"*",
-      "node-fakeweb":"0.0.9"
-   },
-   "scripts":{
-      "test":"make test"
-   },
-   "engines":{
-      "node":">= 0.4.0"
-   },
-   "licenses":[
-      {
-         "type":"MIT",
-         "url":"http://github.com/gabceb/node-metainspector/raw/master/LICENSE"
-      }
-   ]
+  "name": "node-metainspector",
+  "description": "Npm package for web scraping purposes. You give it an URL, and it lets you easily get its title, links, images, description, keywords, meta tags",
+  "version": "0.0.1",
+  "homepage": "http://github.com/gabceb/node-metainspector",
+  "repository": "git://github.com/gabceb/node-metainspector.git",
+  "author": "Gabriel Cebrian <gabceb@gmail.com> (http://about.me/gabceb)",
+  "main": "./index.js",
+  "dependencies": {
+    "request": "2.20.0",
+    "cheerio": "0.10.8",
+    "uri-js": "1.4.2"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*",
+    "node-fakeweb": "0.0.9",
+    "grunt": "~0.4.2",
+    "grunt-contrib-jshint": "~0.7.2"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "engines": {
+    "node": ">= 0.4.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/gabceb/node-metainspector/raw/master/LICENSE"
+    }
+  ]
 }
