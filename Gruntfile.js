@@ -18,7 +18,18 @@ module.exports = function(grunt) {
         boss: true,
         eqnull: true,
         globals: {
-          jQuery: true
+          jQuery: true,
+          console: true,
+          module: true,
+          require: true,
+          __dirname: true,
+          /*MOCHA*/
+          describe: true,
+          it: true,
+          before: true,
+          beforeEach: true,
+          after: true,
+          afterEach: true
         }
       },
       gruntfile: {

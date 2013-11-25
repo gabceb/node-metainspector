@@ -1,5 +1,4 @@
 var fakeweb = require('node-fakeweb'),
-	fs = require('fs'),
 	path = require('path');
 
 fakeweb.allowNetConnect = false;

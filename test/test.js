@@ -1,8 +1,7 @@
 require('mocha');
 
 var MetaInspector = require('../index'),
-	should = require('should'),
-	util = require('util');
+	should = require('should');
 
 require('./fixtures/fixtures');
 
