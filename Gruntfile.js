@@ -16,6 +16,7 @@ module.exports = function(grunt) {
         undef: true,
         boss: true,
         eqnull: true,
+        camelcase: true,
         globals: {
           jQuery: true,
           console: true,
@@ -35,9 +36,7 @@ module.exports = function(grunt) {
       gruntfile: {
         src: 'Gruntfile.js'
       },
-      lib_test: {
-        src: ['lib/**/*.js', 'test/**/*.js', 'index.js']
-      }
+      files: ['lib/**/*.js', 'test/**/*.js', 'index.js']
     }
   });
 

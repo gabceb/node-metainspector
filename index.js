@@ -105,7 +105,7 @@ function getSecondaryDescription()
 
 	if(_my.metaDescription === undefined)
 	{
-		var minimum_p_length = 120;
+		var minimumPLength = 120;
 
 		self.parsedDocument("p").each(function(i, elem){
 			if(_my.metaDescription !== undefined){
@@ -115,7 +115,7 @@ function getSecondaryDescription()
 			var text = self.parsedDocument(this).text();
 			
 			// If we found a paragraph with more than
-			if(text.length >= minimum_p_length)
+			if(text.length >= minimumPLength)
 			{
 				_my.metaDescription = text;
 			}
