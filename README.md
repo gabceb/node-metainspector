@@ -15,6 +15,9 @@ client.host               	# Hostname of the page (like, markupvalidator.com, wi
 client.rootUrl 			  	# Root url (scheme + host, i.e http://simple.com/)
 client.title              	# title of the page, as string
 client.links              	# array of strings, with every link found on the page as an absolute URL
+client.author              # page author, as string
+client.keywords            # keywords from meta tag, as array
+client.charset             # page charset from meta tag, as string   
 client.metaDescription   	# meta description, as string
 client.description        	# returns the meta description, or the first long paragraph if no meta description is found
 client.image              	# Most relevant image, if defined with og:image

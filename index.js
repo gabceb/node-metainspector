@@ -34,7 +34,7 @@ function withDefaultScheme(url){
 var MetaInspector = function(url){
 	this.url = URI.normalize(withDefaultScheme(url));
 	_my = {};
-	
+
 	this.parsedUrl = URI.parse(this.url);
 	this.scheme = this.parsedUrl.scheme;
 	this.host = this.parsedUrl.host;
@@ -53,7 +53,7 @@ function getTitle()
 	{
 		_my.title = this.parsedDocument('title').text();
 	}
-	 
+
 	return _my.title;
 }
 
@@ -65,7 +65,7 @@ function getOgTitle()
 	{
 		_my.ogTitle = this.parsedDocument("meta[property='og:title']").attr("content");
 	}
-	 
+
 	return _my.ogTitle;
 }
 
@@ -113,7 +113,7 @@ function getSecondaryDescription()
 			}
 
 			var text = self.parsedDocument(this).text();
-			
+
 			// If we found a paragraph with more than
 			if(text.length >= minimumPLength)
 			{
@@ -129,6 +129,48 @@ function getDescription()
 {
 	debug("Parsing page description based on meta description or secondary description");
 	return getMetaDescription.apply(this) || getSecondaryDescription.apply(this);
+}
+
+function getKeywords()
+{
+	debug("Parsing page keywords from apropriate metatag");
+
+	var self = this;
+
+	if(_my.metaKeywords === undefined)
+	{
+		_my.metaKeywords = self.parsedDocument("meta[name='keywords']").attr("content").split(',');
+	}
+
+	return _my.metaKeywords;
+}
+
+function getAuthor()
+{
+	debug("Parsing page author from apropriate metatag");
+
+	var self = this;
+
+	if(_my.metaAuthor === undefined)
+	{
+		_my.metaAuthor = self.parsedDocument("meta[name='author']").attr("content");
+	}
+
+	return _my.metaAuthor;
+}
+
+function getCharset()
+{
+	debug("Parsing page charset from apropriate metatag");
+
+	var self = this;
+
+	if(_my.metaCharset === undefined)
+	{
+		_my.metaCharset = self.parsedDocument("meta[charset]").attr("charset");
+	}
+
+	return _my.metaCharset;
 }
 
 function getImage()
@@ -159,6 +201,15 @@ function initAllProperties()
 {
 	// title of the page, as string
 	this.title = getTitle.bind(this);
+
+	// author name from metatag, as string
+	this.author = getAuthor.bind(this);
+
+	// charset from metatag, as string
+	this.charset = getCharset.bind(this);
+
+  // array of strings, with every keyword from keywords metatag
+	this.keywords = getKeywords.bind(this);
 
 	// array of strings, with every link found on the page
 	this.links = getLinks.bind(this);
