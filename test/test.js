@@ -67,7 +67,40 @@ describe('metainspector', function(){
 			client.fetch();
 		});
 
-		it('should have a links returned as an array', function(done){
+		it('should have keywords', function(done){
+			client = new MetaInspector("http://www.simple.com", {});
+
+			client.once("fetch", function(){
+				client.keywords().should.be.instanceof(Array).and.have.lengthOf(4).and.be.eql([ 'HTML', 'CSS', 'XML', 'JavaScript' ]);
+				done();
+			});
+
+			client.fetch();
+		});
+
+		it('should have author', function(done){
+			client = new MetaInspector("http://www.simple.com", {});
+
+			client.once("fetch", function(){
+				client.author().should.be.equal('Author Name');
+				done();
+			});
+
+			client.fetch();
+		});
+
+		it('should have charset', function(done){
+			client = new MetaInspector("http://www.simple.com", {});
+
+			client.once("fetch", function(){
+				client.charset().should.be.equal('UTF-8');
+				done();
+			});
+
+			client.fetch();
+		});
+
+		it('should have links returned as an array', function(done){
 			client = new MetaInspector("http://www.google.com", {});
 
 			client.once("fetch", function(){
