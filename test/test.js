@@ -71,7 +71,40 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.simple.com", {});
 
 			client.once("fetch", function(){
-				client.keywords().should.be.instanceof(Array).and.have.lengthOf(4).and.be.eql([ 'HTML', 'CSS', 'XML', 'JavaScript' ]);
+				client.keywords().should.be.instanceof(Array).and.be.eql([ 'HTML', 'CSS', 'XML', 'JavaScript' ]).and.have.lengthOf(4);
+				done();
+			});
+
+			client.fetch();
+		});
+
+		it('keywords should be undefined if there is no keywords', function(done){
+			client = new MetaInspector("http://www.google.com", {});
+
+			client.once("fetch", function(){
+				should.not.exist(client.keywords());
+				done();
+			});
+
+			client.fetch();
+		});
+
+		it('author should be undefined if there is no author', function(done){
+			client = new MetaInspector("http://www.google.com", {});
+
+			client.once("fetch", function(){
+				should.not.exist(client.author());
+				done();
+			});
+
+			client.fetch();
+		});
+
+		it('charset should be undefined if there is no charset', function(done){
+			client = new MetaInspector("http://www.google.com", {});
+
+			client.once("fetch", function(){
+				should.not.exist(client.charset());
 				done();
 			});
 
