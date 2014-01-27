@@ -139,7 +139,11 @@ function getKeywords()
 
 	if(_my.metaKeywords === undefined)
 	{
-		_my.metaKeywords = self.parsedDocument("meta[name='keywords']").attr("content").split(',');
+		var keywordsString = self.parsedDocument("meta[name='keywords']").attr("content");
+
+		if(keywordsString !== undefined) {
+			_my.metaKeywords = keywordsString.split(',');
+		}
 	}
 
 	return _my.metaKeywords;
