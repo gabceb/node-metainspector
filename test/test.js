@@ -188,6 +188,23 @@ describe('metainspector', function(){
 			client.fetch();
 		});
 
+		it('should return an array of absolute image paths for all images on the page', function(done){
+			client = new MetaInspector("http://www.simple.com", {});
+
+			client.once("fetch", function(){
+				client.images().should.be.instanceof(Array).and.be.eql(
+					[ 'http://www.simple.com/clouds.jpg',
+						'http://www.simple.com/image/relative.gif',
+						'http://www.simple.com/image/relative2.gif',
+						'http://placehold.it/350x150',
+						'https://placehold.it/350x65',
+						'//placehold.it/350x65' ]);
+				done();
+			});
+
+			client.fetch();
+		});
+
 		it('should return an array of rss or atom feeds if defined', function(done){
 			client = new MetaInspector("http://www.simple.com", {});
 

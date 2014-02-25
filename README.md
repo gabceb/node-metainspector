@@ -54,7 +54,6 @@ Add absolutify url function to return all urls as an absolute url
 
 client.internal_links     	# array of strings, with every internal link found on the page as an absolute URL
 client.external_links     	# array of strings, with every external link found on the page as an absolute URL
-client.images           	# array of strings, with every img found on the page as an absolute URL
 
 ```
 
