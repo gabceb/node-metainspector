@@ -189,6 +189,22 @@ function getImage()
 	return _my.metaImage;
 }
 
+function getImages()
+{
+	debug("Parsing page body images");
+
+	var self = this;
+
+	if(_my.images === undefined)
+	{
+		_my.images = self.parsedDocument('img').map(function(i ,elem){
+			var src = self.parsedDocument(this).attr('src');
+			return self.getAbsolutePath(src);
+		});
+	}
+	return _my.images;
+}
+
 function getFeeds()
 {
 	debug("Parsing page feeds based on rss or atom feeds");
@@ -227,12 +243,21 @@ function initAllProperties()
 	// Most relevant image, if defined with og:image
 	this.image = getImage.bind(this);
 
+	// array of strings, with every image path on the page, relative links are converted to absolute paths
+	this.images = getImages.bind(this);
+
 	// Get rss or atom links in meta data fields as array
 	this.feeds = getFeeds.bind(this);
 
 	// opengraph title
 	this.ogTitle = getOgTitle.bind(this);
 }
+
+MetaInspector.prototype.getAbsolutePath = function(href){
+	if((/^(http:|https:)?\/\//i).test(href)) { return href; }
+	if(!(/^\//).test(href)){ href = '/' + href; }
+	return this.rootUrl + href;
+};
 
 MetaInspector.prototype.fetch = function(){
 	var self = this;
