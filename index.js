@@ -40,6 +40,7 @@ var MetaInspector = function(url, options){
 	this.scheme = this.parsedUrl.scheme;
 	this.host = this.parsedUrl.host;
 	this.rootUrl = this.scheme + "://" + this.host;
+    this.removeAllListeners();
 };
 
 MetaInspector.prototype = new events.EventEmitter();
