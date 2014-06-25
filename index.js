@@ -282,7 +282,7 @@ MetaInspector.prototype.fetch = function(){
 
 	if(self.options && self.options.limit){
 		r.on('data', function(chunk){
-			totalChunks=+ chunk.length;
+			totalChunks += chunk.length;
 			if(totalChunks > self.options.limit){
 				self.emit("limit");
 				r.abort();
