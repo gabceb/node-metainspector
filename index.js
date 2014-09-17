@@ -31,14 +31,16 @@ function withDefaultScheme(url){
 	return URI.parse(url).scheme ? url : "http://" + url;
 }
 
-var MetaInspector = function(url){
+var MetaInspector = function(url, options){
 	this.url = URI.normalize(withDefaultScheme(url));
 	_my = {};
+	this.options = options;
 
 	this.parsedUrl = URI.parse(this.url);
 	this.scheme = this.parsedUrl.scheme;
 	this.host = this.parsedUrl.host;
 	this.rootUrl = this.scheme + "://" + this.host;
+    this.removeAllListeners();
 };
 
 MetaInspector.prototype = new events.EventEmitter();
@@ -261,8 +263,9 @@ MetaInspector.prototype.getAbsolutePath = function(href){
 
 MetaInspector.prototype.fetch = function(){
 	var self = this;
+	var totalChunks = 0;
 
-	request({uri : this.url}, function(error, response, body){
+	var r = request({uri : this.url}, function(error, response, body){
 		if(!error && response.statusCode === 200){
 			self.document = body;
 			self.parsedDocument = cheerio.load(body);
@@ -276,4 +279,14 @@ MetaInspector.prototype.fetch = function(){
 			self.emit("error", error);
 		}
 	});
+
+	if(self.options && self.options.limit){
+		r.on('data', function(chunk){
+			totalChunks += chunk.length;
+			if(totalChunks > self.options.limit){
+				self.emit("limit");
+				r.abort();
+			}
+		});
+	}
 };
