@@ -7,6 +7,32 @@ require('./fixtures/fixtures');
 
 describe('metainspector', function(){
 
+	describe('multiple clients', function(){
+		var firstClient = new MetaInspector('http://www.google.com');
+		var secondClient = new MetaInspector('http://www.google.com');
+
+		it('should not keep the same eventEmitter reference among clients', function(done){
+			var calledOnce = false;
+
+			firstClient.on('fetch', function(){
+				if (!calledOnce) {
+					calledOnce = true;
+				} else {
+					throw new Error('I should not get called twice');
+				}
+			});
+
+			secondClient.on('fetch', function(){
+				should.exists(secondClient.parsedDocument);
+
+				if (calledOnce) done();
+			});
+
+			firstClient.fetch();
+			secondClient.fetch();
+		});
+	});
+
 	describe('client', function(){
 		var client = null;
 
@@ -60,7 +86,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.google.com", {});
 
 			client.once("fetch", function(){
-				client.title().should.equal("Google");
+				client.title.should.equal("Google");
 				done();
 			});
 
@@ -71,7 +97,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.simple.com", {});
 
 			client.once("fetch", function(){
-				client.keywords().should.be.instanceof(Array).and.be.eql([ 'HTML', 'CSS', 'XML', 'JavaScript' ]).and.have.lengthOf(4);
+				client.keywords.should.be.instanceof(Array).and.be.eql([ 'HTML', 'CSS', 'XML', 'JavaScript' ]).and.have.lengthOf(4);
 				done();
 			});
 
@@ -82,7 +108,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.google.com", {});
 
 			client.once("fetch", function(){
-				should.not.exist(client.keywords());
+				client.keywords.should.be.instanceof(Array).and.be.eql([]);
 				done();
 			});
 
@@ -93,7 +119,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.google.com", {});
 
 			client.once("fetch", function(){
-				should.not.exist(client.author());
+				should.not.exist(client.author);
 				done();
 			});
 
@@ -104,7 +130,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.google.com", {});
 
 			client.once("fetch", function(){
-				should.not.exist(client.charset());
+				should.not.exist(client.charset);
 				done();
 			});
 
@@ -115,7 +141,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.simple.com", {});
 
 			client.once("fetch", function(){
-				client.author().should.be.equal('Author Name');
+				client.author.should.be.equal('Author Name');
 				done();
 			});
 
@@ -126,7 +152,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.simple.com", {});
 
 			client.once("fetch", function(){
-				client.charset().should.be.equal('UTF-8');
+				client.charset.should.be.equal('UTF-8');
 				done();
 			});
 
@@ -137,7 +163,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.google.com", {});
 
 			client.once("fetch", function(){
-				client.links().length.should.equal(51);
+				client.links.length.should.equal(51);
 				done();
 			});
 
@@ -148,7 +174,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.google.com", {});
 
 			client.once("fetch", function(){
-				client.description().should.equal("Search the world's information, including webpages, images, videos and more. Google has many special features to help you find exactly what you're looking for.");
+				client.description.should.equal("Search the world's information, including webpages, images, videos and more. Google has many special features to help you find exactly what you're looking for.");
 				done();
 			});
 
@@ -159,7 +185,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.simple.com", {});
 
 			client.once("fetch", function(){
-				should.not.exist(client.metaDescription());
+				should.not.exist(client.metaDescription);
 				done();
 			});
 
@@ -170,7 +196,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.simple.com", {});
 
 			client.once("fetch", function(){
-				client.description().should.equal("This is a new paragraph! This paragraph should be very long so we can grab it as the secondary description. What do you think of that?");
+				client.description.should.equal("This is a new paragraph! This paragraph should be very long so we can grab it as the secondary description. What do you think of that?");
 				done();
 			});
 
@@ -181,7 +207,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.simple.com", {});
 
 			client.once("fetch", function(){
-				client.image().should.equal("http://placehold.it/350x150");
+				client.image.should.equal("http://placehold.it/350x150");
 				done();
 			});
 
@@ -192,7 +218,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.simple.com", {});
 
 			client.once("fetch", function(){
-				client.images().should.be.instanceof(Array).and.be.eql(
+				client.images.should.be.instanceof(Array).and.be.eql(
 					[ 'http://www.simple.com/clouds.jpg',
 						'http://www.simple.com/image/relative.gif',
 						'http://www.simple.com/image/relative2.gif',
@@ -209,7 +235,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.simple.com", {});
 
 			client.once("fetch", function(){
-				client.feeds().length.should.equal(2);
+				client.feeds.length.should.equal(2);
 				done();
 			});
 
@@ -220,7 +246,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.simple.com", {});
 
 			client.once("fetch", function(){
-				client.ogTitle().should.equal("I am an Open Graph title");
+				client.ogTitle.should.equal("I am an Open Graph title");
 				done();
 			});
 
