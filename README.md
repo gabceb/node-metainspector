@@ -18,7 +18,6 @@ client.links              	# array of strings, with every link found on the page
 client.author               # page author, as string
 client.keywords             # keywords from meta tag, as array
 client.charset              # page charset from meta tag, as string
-client.metaDescription   	# meta description, as string
 client.description        	# returns the meta description, or the first long paragraph if no meta description is found
 client.image              	# Most relevant image, if defined with og:image
 client.images              	# array of strings, with every img found on the page as an absolute URL
@@ -35,7 +34,7 @@ var client = new MetaInspector("http://www.google.com", {});
 client.on("fetch", function(){
     console.log("Description: " + client.description());
 
-    console.log("Links: " + client.links().join(","));
+    console.log("Links: " + client.links.join(","));
 });
 
 client.on("error", function(err){
