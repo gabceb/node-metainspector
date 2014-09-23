@@ -32,7 +32,7 @@ client.oGtitle      		# opengraph title
 var client = new MetaInspector("http://www.google.com", {});
 
 client.on("fetch", function(){
-    console.log("Description: " + client.description());
+    console.log("Description: " + client.description;
 
     console.log("Links: " + client.links.join(","));
 });
