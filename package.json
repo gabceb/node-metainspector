@@ -1,7 +1,7 @@
 {
   "name": "node-metainspector",
   "description": "Npm package for web scraping purposes. You give it an URL, and it lets you easily get its title, links, images, description, keywords, meta tags",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "homepage": "http://github.com/gabceb/node-metainspector",
   "repository": "git://github.com/gabceb/node-metainspector.git",
   "author": "Gabriel Cebrian <gabceb@gmail.com> (http://about.me/gabceb)",
