@@ -30,7 +30,7 @@ var MetaInspector = function(url, options){
 	//default to a sane limit, since for meta-inspector usually 5 redirects should do a job
 	//more over beyond this there could be an issue with event emitter loop detection with new nodejs version
 	//which prevents error event from getting fired
-	this.maxRedirects = this.options.maxRedirects || 5;
+	this.maxRedirects = options.maxRedirects || 5;
   
   //this.removeAllListeners();
 };
