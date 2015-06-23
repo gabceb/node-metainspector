@@ -259,10 +259,14 @@ MetaInspector.prototype.fetch = function(){
 	});
 
 	if(_this.options.limit){
+		_this.__stoppedAtLimit = false;
 		r.on('data', function(chunk){
 			totalChunks += chunk.length;
 			if(totalChunks > _this.options.limit){
-				_this.emit("limit");
+				if(!_this.__stoppedAtLimit) {
+					_this.emit("limit");
+					_this.__stoppedAtLimit = true;
+				}
 				r.abort();
 			}
 		});
