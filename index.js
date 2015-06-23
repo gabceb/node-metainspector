@@ -26,6 +26,11 @@ var MetaInspector = function(url, options){
 	this.scheme = this.parsedUrl.scheme;
 	this.host = this.parsedUrl.host;
 	this.rootUrl = this.scheme + "://" + this.host;
+	
+	//default to a sane limit, since for meta-inspector usually 5 redirects should do a job
+	//more over beyond this there could be an issue with event emitter loop detection with new nodejs version
+	//which prevents error event from getting fired
+	this.maxRedirects = this.options.maxRedirects || 5;
   
   //this.removeAllListeners();
 };
@@ -238,7 +243,7 @@ MetaInspector.prototype.fetch = function(){
 	var _this = this;
 	var totalChunks = 0;
 
-	var r = request({uri : this.url, gzip: true}, function(error, response, body){
+	var r = request({uri : this.url, gzip: true, maxRedirects: this.maxRedirects}, function(error, response, body){
 		if(!error && response.statusCode === 200){
 			_this.document = body;
 			_this.parsedDocument = cheerio.load(body);
