@@ -238,7 +238,7 @@ MetaInspector.prototype.fetch = function(){
 	var _this = this;
 	var totalChunks = 0;
 
-	var r = request({uri : this.url}, function(error, response, body){
+	var r = request({uri : this.url, gzip: true}, function(error, response, body){
 		if(!error && response.statusCode === 200){
 			_this.document = body;
 			_this.parsedDocument = cheerio.load(body);
