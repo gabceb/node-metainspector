@@ -29,10 +29,11 @@ client.oGtitle      		# opengraph title
 ## Usage
 
 ```javascript
+var MetaInspector = require('node-metainspector');
 var client = new MetaInspector("http://www.google.com", {});
 
 client.on("fetch", function(){
-    console.log("Description: " + client.description;
+    console.log("Description: " + client.description);
 
     console.log("Links: " + client.links.join(","));
 });
