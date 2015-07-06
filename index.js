@@ -31,6 +31,9 @@ var MetaInspector = function(url, options){
 	//more over beyond this there could be an issue with event emitter loop detection with new nodejs version
 	//which prevents error event from getting fired
 	this.maxRedirects = this.options.maxRedirects || 5;
+	
+	//some urls are timing out after one minute, hence need to specify a reasoable default timeout
+	this.timeout = this.options.timeout || 20000; //Timeout in ms
   
   //this.removeAllListeners();
 };
@@ -243,7 +246,7 @@ MetaInspector.prototype.fetch = function(){
 	var _this = this;
 	var totalChunks = 0;
 
-	var r = request({uri : this.url, gzip: true, maxRedirects: this.maxRedirects}, function(error, response, body){
+	var r = request({uri : this.url, gzip: true, maxRedirects: this.maxRedirects, timeout: this.timeout}, function(error, response, body){
 		if(!error && response.statusCode === 200){
 			_this.document = body;
 			_this.parsedDocument = cheerio.load(body);
