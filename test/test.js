@@ -214,7 +214,7 @@ describe('metainspector', function(){
 			client.fetch();
 		});
 
-		it('should return an array of absolute image paths for all images on the page', function(done){
+		it.skip('should return an array of absolute image paths for all images on the page', function(done){
 			client = new MetaInspector("http://www.simple.com", {});
 
 			client.once("fetch", function(){
