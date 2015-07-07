@@ -12,11 +12,11 @@
     "uri-js": "~2.1.0"
   },
   "devDependencies": {
-    "mocha": "*",
-    "should": "*",
-    "node-fakeweb": "0.0.9",
     "grunt": "~0.4.2",
-    "grunt-contrib-jshint": "~0.7.2"
+    "grunt-contrib-jshint": "~0.7.2",
+    "mocha": "^2.2.5",
+    "node-fakeweb": "0.0.9",
+    "should": "^7.0.1"
   },
   "scripts": {
     "test": "make test"

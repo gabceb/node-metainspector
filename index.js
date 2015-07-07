@@ -34,8 +34,6 @@ var MetaInspector = function(url, options){
 	
 	//some urls are timing out after one minute, hence need to specify a reasoable default timeout
 	this.timeout = this.options.timeout || 20000; //Timeout in ms
-  
-  //this.removeAllListeners();
 };
 
 //MetaInspector.prototype = new events.EventEmitter();

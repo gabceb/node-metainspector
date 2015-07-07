@@ -1,5 +1,5 @@
 var fakeweb = require('node-fakeweb'),
-	path = require('path');
+    path = require('path');
 
 fakeweb.allowNetConnect = false;
 fakeweb.registerUri({uri: 'http://www.google.com:80/', file: path.join(__dirname, 'google.com.html')});
