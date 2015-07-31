@@ -34,6 +34,8 @@ var MetaInspector = function(url, options){
 	
 	//some urls are timing out after one minute, hence need to specify a reasoable default timeout
 	this.timeout = this.options.timeout || 20000; //Timeout in ms
+
+	this.strictSSL = this.options.strictSSL === false ? false : true;
 };
 
 //MetaInspector.prototype = new events.EventEmitter();
@@ -244,7 +246,7 @@ MetaInspector.prototype.fetch = function(){
 	var _this = this;
 	var totalChunks = 0;
 
-	var r = request({uri : this.url, gzip: true, maxRedirects: this.maxRedirects, timeout: this.timeout}, function(error, response, body){
+	var r = request({uri : this.url, gzip: true, maxRedirects: this.maxRedirects, timeout: this.timeout, strictSSL: this.strictSSL}, function(error, response, body){
 		if(!error && response.statusCode === 200){
 			_this.document = body;
 			_this.parsedDocument = cheerio.load(body);
