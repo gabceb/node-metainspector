@@ -67,6 +67,18 @@ MetaInspector.prototype.getOgTitle = function()
 	return this;
 }
 
+MetaInspector.prototype.getOgDescription = function()
+{
+	debug("Parsing page Open Graph description");
+
+	if(this.ogDescription === undefined)
+	{
+		this.ogDescription = this.parsedDocument("meta[property='og:description']").attr("content");
+	}
+
+	return this;
+}
+
 MetaInspector.prototype.getLinks = function()
 {
 	debug("Parsing page links");
@@ -233,7 +245,8 @@ MetaInspector.prototype.initAllProperties = function()
 			.getImage()
 			.getImages()
 			.getFeeds()
-			.getOgTitle();
+			.getOgTitle()
+			.getOgDescription();
 }
 
 MetaInspector.prototype.getAbsolutePath = function(href){
