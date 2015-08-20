@@ -192,6 +192,17 @@ describe('metainspector', function(){
 			client.fetch();
 		});
 
+		it('should have a og:description', function(done){
+			client = new MetaInspector("http://www.fastandfurious7-film.com");
+
+			client.once("fetch", function(){
+				client.ogDescription.should.equal("Continuing the global exploits in the unstoppable franchise built on speed, Vin Diesel, Paul Walker and Dwayne Johnson lead the returning cast of Fast & Furious 7.");
+				done();
+			});
+
+			client.fetch();
+		});
+
 		it('should return undefined if the meta description is not defined when metaDescription used', function(done){
 			client = new MetaInspector("http://www.simple.com", {});
 
