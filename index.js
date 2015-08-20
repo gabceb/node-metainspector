@@ -189,7 +189,7 @@ MetaInspector.prototype.getImage = function()
 
 	if(!this.image)
 	{
-		this.image = this.parsedDocument("meta[property='og:image']").attr("content");
+		this.image = this.getAbsolutePath(this.parsedDocument("meta[property='og:image']").attr("content"));
 	}
 
 	return this;

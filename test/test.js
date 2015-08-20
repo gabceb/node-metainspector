@@ -181,6 +181,17 @@ describe('metainspector', function(){
 			client.fetch();
 		});
 
+		it('should have a og:image with relative path and return as absolute', function(done){
+			client = new MetaInspector("http://www.fastandfurious7-film.com");
+
+			client.once("fetch", function(){
+				client.image.should.equal("http://www.fastandfurious7-film.com/images/fb.jpg");
+				done();
+			});
+
+			client.fetch();
+		});
+
 		it('should return undefined if the meta description is not defined when metaDescription used', function(done){
 			client = new MetaInspector("http://www.simple.com", {});
 
