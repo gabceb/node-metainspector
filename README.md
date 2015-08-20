@@ -23,6 +23,7 @@ client.image              	# Most relevant image, if defined with og:image
 client.images              	# array of strings, with every img found on the page as an absolute URL
 client.feeds            	# Get rss or atom links in meta data fields as array
 client.ogTitle      		# opengraph title
+client.ogDescription   		# opengraph description
 
 ```
 
