@@ -47,7 +47,7 @@ MetaInspector.prototype.getTitle = function()
 
 	if(this.title === undefined)
 	{
-		this.title = this.parsedDocument('title').text();
+		this.title = this.parsedDocument('head > title').text();
 	}
 
 	return this;
