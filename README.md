@@ -9,22 +9,21 @@ Metainspector is inspired by the Metainspector gem by [jaimeiniesta](https://git
 ### Scraped data
 
 ```
-client.url                	# URL of the page
-client.scheme             	# Scheme of the page (http, https)
-client.host               	# Hostname of the page (like, markupvalidator.com, without the scheme)
-client.rootUrl 			  	# Root url (scheme + host, i.e http://simple.com/)
-client.title              	# title of the page, as string
-client.links              	# array of strings, with every link found on the page as an absolute URL
+client.url                  # URL of the page
+client.scheme               # Scheme of the page (http, https)
+client.host                 # Hostname of the page (like, markupvalidator.com, without the scheme)
+client.rootUrl              # Root url (scheme + host, i.e http://simple.com/)
+client.title                # title of the page, as string
+client.links                # array of strings, with every link found on the page as an absolute URL
 client.author               # page author, as string
 client.keywords             # keywords from meta tag, as array
 client.charset              # page charset from meta tag, as string
-client.description        	# returns the meta description, or the first long paragraph if no meta description is found
-client.image              	# Most relevant image, if defined with og:image
-client.images              	# array of strings, with every img found on the page as an absolute URL
-client.feeds            	# Get rss or atom links in meta data fields as array
-client.ogTitle      		# opengraph title
-client.ogDescription   		# opengraph description
-
+client.description          # returns the meta description, or the first long paragraph if no meta description is found
+client.image                # Most relevant image, if defined with og:image
+client.images               # array of strings, with every img found on the page as an absolute URL
+client.feeds                # Get rss or atom links in meta data fields as array
+client.ogTitle              # opengraph title
+client.ogDescription        # opengraph description
 ```
 
 ### Options

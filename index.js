@@ -35,7 +35,7 @@ var MetaInspector = function(url, options){
 	//some urls are timing out after one minute, hence need to specify a reasoable default timeout
 	this.timeout = this.options.timeout || 20000; //Timeout in ms
 
-	this.strictSSL = this.options.strictSSL === false ? false : true;
+	this.strictSSL = !!this.options.strictSSL;
 };
 
 //MetaInspector.prototype = new events.EventEmitter();
@@ -47,7 +47,7 @@ MetaInspector.prototype.getTitle = function()
 {
 	debug("Parsing page title");
 
-	if(this.title === undefined)
+	if(!this.title)
 	{
 		this.title = this.parsedDocument('head > title').text();
 	}
@@ -59,7 +59,7 @@ MetaInspector.prototype.getOgTitle = function()
 {
 	debug("Parsing page Open Graph title");
 
-	if(this.ogTitle === undefined)
+	if(!this.ogTitle)
 	{
 		this.ogTitle = this.parsedDocument("meta[property='og:title']").attr("content");
 	}
