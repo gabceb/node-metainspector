@@ -34,6 +34,8 @@ var MetaInspector = function(url, options){
 	
 	//some urls are timing out after one minute, hence need to specify a reasoable default timeout
 	this.timeout = this.options.timeout || 20000; //Timeout in ms
+
+	this.strictSSL = this.options.strictSSL === false ? false : true;
 };
 
 //MetaInspector.prototype = new events.EventEmitter();
@@ -60,6 +62,18 @@ MetaInspector.prototype.getOgTitle = function()
 	if(this.ogTitle === undefined)
 	{
 		this.ogTitle = this.parsedDocument("meta[property='og:title']").attr("content");
+	}
+
+	return this;
+}
+
+MetaInspector.prototype.getOgDescription = function()
+{
+	debug("Parsing page Open Graph description");
+
+	if(this.ogDescription === undefined)
+	{
+		this.ogDescription = this.parsedDocument("meta[property='og:description']").attr("content");
 	}
 
 	return this;
@@ -175,7 +189,10 @@ MetaInspector.prototype.getImage = function()
 
 	if(!this.image)
 	{
-		this.image = this.parsedDocument("meta[property='og:image']").attr("content");
+		var img = this.parsedDocument("meta[property='og:image']").attr("content");
+		if (img){
+			this.image = this.getAbsolutePath(img);
+		}
 	}
 
 	return this;
@@ -231,7 +248,8 @@ MetaInspector.prototype.initAllProperties = function()
 			.getImage()
 			.getImages()
 			.getFeeds()
-			.getOgTitle();
+			.getOgTitle()
+			.getOgDescription();
 }
 
 MetaInspector.prototype.getAbsolutePath = function(href){
@@ -244,7 +262,7 @@ MetaInspector.prototype.fetch = function(){
 	var _this = this;
 	var totalChunks = 0;
 
-	var r = request({uri : this.url, gzip: true, maxRedirects: this.maxRedirects, timeout: this.timeout}, function(error, response, body){
+	var r = request({uri : this.url, gzip: true, maxRedirects: this.maxRedirects, timeout: this.timeout, strictSSL: this.strictSSL}, function(error, response, body){
 		if(!error && response.statusCode === 200){
 			_this.document = body;
 			_this.parsedDocument = cheerio.load(body);
