@@ -1,245 +1,217 @@
-var util = require('util'),
-	request = require('request'),
-	events = require('events'),
-	cheerio = require('cheerio'),
-	URI = require('uri-js');
+'use strict';
 
-var debug;
+const util = require('util');
 
-if (/\bmetainspector\b/.test(process.env.NODE_DEBUG)) {
-  debug = function() {
-    console.error('METAINSPECTOR %s', util.format.apply(util, arguments));
-  };
-} else {
-  debug = function() {};
+const cheerio = require('cheerio');
+const events = require('events');
+const request = require('request');
+const URI = require('uri-js');
+
+let debug = function() {};
+
+if (~String(process.env.NODE_DEBUG).indexOf('metainspector')) {
+	debug = () => {
+		console.error('METAINSPECTOR %s', util.format.apply(util, arguments));
+	};
 }
 
-function withDefaultScheme(url){
-	return URI.parse(url).scheme ? url : "http://" + url;
-}
-
-var MetaInspector = function(url, options){
-	this.url = URI.normalize(withDefaultScheme(url));
-	this.options = options || {};
-
-	this.parsedUrl = URI.parse(this.url);
-	this.scheme = this.parsedUrl.scheme;
-	this.host = this.parsedUrl.host;
-	this.rootUrl = this.scheme + "://" + this.host;
-	
-	//default to a sane limit, since for meta-inspector usually 5 redirects should do a job
-	//more over beyond this there could be an issue with event emitter loop detection with new nodejs version
-	//which prevents error event from getting fired
-	this.maxRedirects = this.options.maxRedirects || 5;
-	
-	//some urls are timing out after one minute, hence need to specify a reasoable default timeout
-	this.timeout = this.options.timeout || 20000; //Timeout in ms
-
-	this.strictSSL = !!this.options.strictSSL;
+let withDefaultScheme = (url) => {
+	return URI.parse(url).scheme ? url : 'http://' + url;
 };
 
-//MetaInspector.prototype = new events.EventEmitter();
-MetaInspector.prototype.__proto__ = events.EventEmitter.prototype;
+class MetaInspector extends events.EventEmitter {
+	constructor (url, options) {
+		super();
 
-module.exports = MetaInspector;
+		this.url = URI.normalize(withDefaultScheme(url));
+		this.options = options || {};
 
-MetaInspector.prototype.getTitle = function()
-{
-	debug("Parsing page title");
+		this.parsedUrl = URI.parse(this.url);
+		this.scheme = this.parsedUrl.scheme;
+		this.host = this.parsedUrl.host;
+		this.rootUrl = this.scheme + '://' + this.host;
 
-	if(!this.title)
-	{
-		this.title = this.parsedDocument('head > title').text();
+		//default to a sane limit, since for meta-inspector usually 5 redirects should do a job
+		//more over beyond this there could be an issue with event emitter loop detection with new nodejs version
+		//which prevents error event from getting fired
+		this.maxRedirects = this.options.maxRedirects || 5;
+
+		//some urls are timing out after one minute, hence need to specify a reasoable default timeout
+		this.timeout = this.options.timeout || 20000; //Timeout in ms
+
+		this.strictSSL = !!this.options.strictSSL;
 	}
 
-	return this;
-}
+	getTitle () {
+		debug('Parsing page title');
 
-MetaInspector.prototype.getOgTitle = function()
-{
-	debug("Parsing page Open Graph title");
+		if (!this.title) {
+			this.title = this.parsedDocument('head > title').text();
+		}
 
-	if(!this.ogTitle)
-	{
-		this.ogTitle = this.parsedDocument("meta[property='og:title']").attr("content");
+		return this;
 	}
 
-	return this;
-}
+	getOgTitle () {
+		debug('Parsing page Open Graph title');
 
-MetaInspector.prototype.getOgDescription = function()
-{
-	debug("Parsing page Open Graph description");
+		if (!this.ogTitle) {
+			this.ogTitle = this.parsedDocument(`meta[property='og:title']`).attr('content');
+		}
 
-	if(this.ogDescription === undefined)
-	{
-		this.ogDescription = this.parsedDocument("meta[property='og:description']").attr("content");
+		return this;
 	}
 
-	return this;
-}
+	getOgDescription () {
+		debug('Parsing page Open Graph description');
 
-MetaInspector.prototype.getLinks = function()
-{
-	debug("Parsing page links");
+		if (this.ogDescription === undefined) {
+			this.ogDescription = this.parsedDocument(`meta[property='og:description']`).attr('content');
+		}
 
-	var _this = this;
-
-	if(!this.links)
-	{
-		this.links = this.parsedDocument('a').map(function(i ,elem){
-			return _this.parsedDocument(this).attr('href');
-		});
+		return this;
 	}
 
-	return this;
-}
+	getLinks () {
+		debug('Parsing page links');
 
-MetaInspector.prototype.getMetaDescription = function()
-{
-	debug("Parsing page description based on meta elements");
+		if (!this.links) {
+			this.links = Array.prototype.slice.call(this.parsedDocument('a').map((i, element) => {
+				return this.parsedDocument(element).attr('href');
+			}));
+		}
 
-	if(!this.description)
-	{
-		this.description = this.parsedDocument("meta[name='description']").attr("content");
+		return this;
 	}
 
-	return this;
-}
+	getMetaDescription () {
+		debug('Parsing page description based on meta elements');
 
-MetaInspector.prototype.getSecondaryDescription = function()
-{
-	debug("Parsing page secondary description");
-	var _this = this;
+		if (!this.description) {
+			this.description = this.parsedDocument(`meta[name='description']`).attr('content');
+		}
 
-	if(!this.description)
-	{
-		var minimumPLength = 120;
+		return this;
+	}
 
-		this.parsedDocument("p").each(function(i, elem){
-			if(_this.description){
-				return;
+	getSecondaryDescription () {
+		debug('Parsing page secondary description');
+
+		if (!this.description) {
+			const minimumPLength = 120;
+
+			this.parsedDocument('p').each((i, element) => {
+				if (this.description) {
+					return;
+				}
+
+				let text = this.parsedDocument(element).text();
+
+				// If we found a paragraph with more than
+				if (text.length >= minimumPLength) {
+					this.description = text;
+				}
+			});
+		}
+
+		return this;
+	}
+
+	getDescription () {
+		debug('Parsing page description based on meta description or secondary description');
+
+		if (this.getMetaDescription()) {
+			this.getSecondaryDescription();
+		}
+
+		return this;
+	}
+
+	getKeywords () {
+		debug('Parsing page keywords from apropriate metatag');
+
+		if (!this.keywords) {
+			let keywordsString = this.parsedDocument(`meta[name='keywords']`).attr('content');
+
+			let keywords = [];
+
+			if (keywordsString) {
+				keywords = keywordsString.split(',');
 			}
 
-			var text = _this.parsedDocument(this).text();
+			this.keywords = keywords;
+		}
 
-			// If we found a paragraph with more than
-			if(text.length >= minimumPLength) {
-				_this.description = text;
+		return this;
+	}
+
+	getAuthor () {
+		debug('Parsing page author from apropriate metatag');
+
+		if (!this.author) {
+			this.author = this.parsedDocument(`meta[name='author']`).attr('content');
+		}
+
+		return this;
+	}
+
+	getCharset () {
+		debug('Parsing page charset from apropriate metatag');
+
+		if (!this.charset) {
+			this.charset = this.parsedDocument('meta[charset]').attr('charset');
+		}
+
+		return this;
+	}
+
+	getImage () {
+		debug('Parsing page image based on the Open Graph image');
+
+		if (!this.image) {
+			let img = this.parsedDocument(`meta[property='og:image']`).attr('content');
+
+			if (img) {
+				this.image = this.getAbsolutePath(img);
 			}
-		});
-	}
-
-	return this;
-}
-
-MetaInspector.prototype.getDescription = function()
-{
-	debug("Parsing page description based on meta description or secondary description");
-	this.getMetaDescription() && this.getSecondaryDescription();
-
-	return this;
-}
-
-MetaInspector.prototype.getKeywords = function()
-{
-	debug("Parsing page keywords from apropriate metatag");
-
-	if(!this.keywords)
-	{
-		var keywordsString = this.parsedDocument("meta[name='keywords']").attr("content");
-
-		if(keywordsString) {
-			this.keywords = keywordsString.split(',');
-		} else {
-			this.keywords = [];
 		}
+
+		return this;
 	}
 
-	return this;
-}
+	getImages () {
+		debug('Parsing page body images');
 
-MetaInspector.prototype.getAuthor = function()
-{
-	debug("Parsing page author from apropriate metatag");
+		if (this.images === undefined) {
+			this.images = Array.prototype.slice.call(this.parsedDocument('img').map((i, element) => {
+				let src = this.parsedDocument(element).attr('src');
 
-	if(!this.author)
-	{
-		this.author = this.parsedDocument("meta[name='author']").attr("content");
-	}
-
-	return this;
-}
-
-MetaInspector.prototype.getCharset = function()
-{
-	debug("Parsing page charset from apropriate metatag");
-
-	if(!this.charset)
-	{
-		this.charset = this.parsedDocument("meta[charset]").attr("charset");
-	}
-
-	return this;
-}
-
-MetaInspector.prototype.getImage = function()
-{
-	debug("Parsing page image based on the Open Graph image");
-
-	if(!this.image)
-	{
-		var img = this.parsedDocument("meta[property='og:image']").attr("content");
-		if (img){
-			this.image = this.getAbsolutePath(img);
+				return this.getAbsolutePath(src);
+			}));
 		}
+
+		return this;
 	}
 
-	return this;
-}
+	getFeeds () {
+		debug('Parsing page feeds based on rss or atom feeds');
 
-MetaInspector.prototype.getImages = function()
-{
-	debug("Parsing page body images");
-	var _this = this;
+		if (!this.feeds) {
+			this.feeds = this.parseFeeds('rss') || this.parseFeeds('atom');
+		}
 
-	if(this.images === undefined)
-	{
-		this.images = this.parsedDocument('img').map(function(i ,elem){
-			var src = _this.parsedDocument(this).attr('src');
-			return _this.getAbsolutePath(src);
-		});
+		return this;
 	}
 
-	return this;
-}
+	parseFeeds (format) {
+		let feedList = this.parsedDocument(`link[type='application/${format}+xml']`);
 
-MetaInspector.prototype.getFeeds = function()
-{
-	debug("Parsing page feeds based on rss or atom feeds");
-
-	if(!this.feeds)
-	{
-		this.feeds = this.parseFeeds("rss") || this.parseFeeds("atom");
+		return feedList.map((i, element) => this.parsedDocument(element).attr('href'));
 	}
 
-	return this;
-}
-
-MetaInspector.prototype.parseFeeds = function(format)
-{
-	var _this = this;
-	var feeds = this.parsedDocument("link[type='application/" + format + "+xml']").map(function(i ,elem){
-		return _this.parsedDocument(this).attr('href');
-	});
-
-	return feeds;
-}
-
-MetaInspector.prototype.initAllProperties = function()
-{
-	// title of the page, as string
-	this.getTitle()
+	initAllProperties () {
+		// title of the page, as string
+		this.getTitle()
 			.getAuthor()
 			.getCharset()
 			.getKeywords()
@@ -250,44 +222,59 @@ MetaInspector.prototype.initAllProperties = function()
 			.getFeeds()
 			.getOgTitle()
 			.getOgDescription();
-}
+	}
 
-MetaInspector.prototype.getAbsolutePath = function(href){
-	if((/^(http:|https:)?\/\//i).test(href)) { return href; }
-	if(!(/^\//).test(href)){ href = '/' + href; }
-	return this.rootUrl + href;
-};
-
-MetaInspector.prototype.fetch = function(){
-	var _this = this;
-	var totalChunks = 0;
-
-	var r = request({uri : this.url, gzip: true, maxRedirects: this.maxRedirects, timeout: this.timeout, strictSSL: this.strictSSL}, function(error, response, body){
-		if(!error && response.statusCode === 200){
-			_this.document = body;
-			_this.parsedDocument = cheerio.load(body);
-			_this.response = response;
-
-			_this.initAllProperties();
-
-			_this.emit("fetch");
+	getAbsolutePath (href) {
+		if ((/^(http:|https:)?\/\//i).test(href)) {
+			return href;
 		}
-		else{
-			_this.emit("error", error);
-		}
-	});
 
-	if(_this.options.limit){
-		_this.__stoppedAtLimit = false;
-		r.on('data', function(chunk){
-			totalChunks += chunk.length;
-			if(totalChunks > _this.options.limit){
-				if(!_this.__stoppedAtLimit) {
-					_this.emit("limit");
-					_this.__stoppedAtLimit = true;
-				}
-				r.abort();
+		if (!(/^\//).test(href)) {
+			href = '/' + href;
+		}
+
+		return this.rootUrl + href;
+	}
+
+	fetch () {
+		var totalChunks = 0;
+
+		var req = request({
+			uri: this.url,
+			gzip: true,
+			maxRedirects: this.maxRedirects,
+			timeout: this.timeout,
+			strictSSL: this.strictSSL
+		}, (error, response, body) => {
+			if (!error && response.statusCode === 200) {
+				this.document = body;
+				this.parsedDocument = cheerio.load(body);
+				this.response = response;
+
+				this.initAllProperties();
+
+				this.emit('fetch');
+			} else {
+				this.emit('error', error);
 			}
 		});
+
+		if (this.options.limit) {
+			this.__stoppedAtLimit = false;
+
+			req.on('data', (chunk) => {
+				totalChunks += chunk.length;
+				if (totalChunks > this.options.limit) {
+					if (!this.__stoppedAtLimit) {
+						this.emit('limit');
+						this.__stoppedAtLimit = true;
+					}
+
+					req.abort();
+				}
+			});
+		}
 	}
-};
+}
+
+module.exports = MetaInspector;
