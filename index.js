@@ -26,12 +26,12 @@ var MetaInspector = function(url, options){
 	this.scheme = this.parsedUrl.scheme;
 	this.host = this.parsedUrl.host;
 	this.rootUrl = this.scheme + "://" + this.host;
-	
+
 	//default to a sane limit, since for meta-inspector usually 5 redirects should do a job
 	//more over beyond this there could be an issue with event emitter loop detection with new nodejs version
 	//which prevents error event from getting fired
 	this.maxRedirects = this.options.maxRedirects || 5;
-	
+
 	//some urls are timing out after one minute, hence need to specify a reasoable default timeout
 	this.timeout = this.options.timeout || 20000; //Timeout in ms
 
@@ -62,6 +62,18 @@ MetaInspector.prototype.getOgTitle = function()
 	if(!this.ogTitle)
 	{
 		this.ogTitle = this.parsedDocument("meta[property='og:title']").attr("content");
+	}
+
+	return this;
+}
+
+MetaInspector.prototype.getOgType = function()
+{
+	debug("Parsing page Open Graph Type");
+
+	if(this.ogType === undefined)
+	{
+		this.ogType = this.parsedDocument("meta[property='og:type']").attr("content");
 	}
 
 	return this;
@@ -249,6 +261,7 @@ MetaInspector.prototype.initAllProperties = function()
 			.getImages()
 			.getFeeds()
 			.getOgTitle()
+			.getOgType()
 			.getOgDescription();
 }
 
