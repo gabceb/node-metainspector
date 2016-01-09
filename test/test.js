@@ -285,5 +285,41 @@ describe('metainspector', function(){
 
 			client.fetch();
 		});
+
+		it("should return the open graph type, if defined", function(done){
+			client = new MetaInspector("http://www.techsuplex.com", {});
+
+			client.once("fetch", function() {
+				client.ogType.should.exist;
+				client.ogType.should.equal("article");
+				done();
+			});
+
+			client.fetch();
+		});
+
+		it('should return the last updated time, if defined', function(done){
+			client = new MetaInspector("http://www.techsuplex.com", {});
+
+			client.once("fetch", function() {
+				client.ogUpdatedTime.should.exist;
+				client.ogUpdatedTime.should.equal("2013-10-31T09:29:46+00:00");
+				done();
+			});
+
+			client.fetch();
+		});
+
+		it('should return the open graph locale, if defined', function(done){
+			client = new MetaInspector("http://www.techsuplex.com", {});
+
+			client.once("fetch", function() {
+				client.ogLocale.should.exist;
+				client.ogLocale.should.equal("en_US");
+				done();
+			});
+
+			client.fetch();
+		});
 	});
 });
