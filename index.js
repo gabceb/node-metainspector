@@ -26,12 +26,12 @@ var MetaInspector = function(url, options){
 	this.scheme = this.parsedUrl.scheme;
 	this.host = this.parsedUrl.host;
 	this.rootUrl = this.scheme + "://" + this.host;
-	
+
 	//default to a sane limit, since for meta-inspector usually 5 redirects should do a job
 	//more over beyond this there could be an issue with event emitter loop detection with new nodejs version
 	//which prevents error event from getting fired
 	this.maxRedirects = this.options.maxRedirects || 5;
-	
+
 	//some urls are timing out after one minute, hence need to specify a reasoable default timeout
 	this.timeout = this.options.timeout || 20000; //Timeout in ms
 
@@ -74,6 +74,42 @@ MetaInspector.prototype.getOgDescription = function()
 	if(this.ogDescription === undefined)
 	{
 		this.ogDescription = this.parsedDocument("meta[property='og:description']").attr("content");
+	}
+
+	return this;
+}
+
+MetaInspector.prototype.getOgType = function()
+{
+	debug("Parsing page's Open Graph Type");
+
+	if(this.ogType === undefined)
+	{
+		this.ogType = this.parsedDocument("meta[property='og:type']").attr("content");
+	}
+
+	return this;
+}
+
+MetaInspector.prototype.getOgUpdatedTime = function()
+{
+	debug("Parsing page's Open Graph Updated Time");
+
+	if(this.ogUpdatedTime === undefined)
+	{
+		this.ogUpdatedTime = this.parsedDocument("meta[property='og:updated_time']").attr("content");
+
+		return this;
+	}
+}
+
+MetaInspector.prototype.getOgLocale = function()
+{
+	debug("Parsing page's Open Graph Locale");
+
+	if(this.ogLocale === undefined)
+	{
+		this.ogLocale = this.parsedDocument("meta[property='og:locale']").attr("content");
 	}
 
 	return this;
@@ -249,7 +285,10 @@ MetaInspector.prototype.initAllProperties = function()
 			.getImages()
 			.getFeeds()
 			.getOgTitle()
-			.getOgDescription();
+			.getOgDescription()
+			.getOgType()
+			.getOgUpdatedTime()
+			.getOgLocale();
 }
 
 MetaInspector.prototype.getAbsolutePath = function(href){

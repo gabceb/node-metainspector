@@ -24,6 +24,9 @@ client.images               # array of strings, with every img found on the page
 client.feeds                # Get rss or atom links in meta data fields as array
 client.ogTitle              # opengraph title
 client.ogDescription        # opengraph description
+client.ogType               # Open Graph Object Type
+client.ogUpdatedTime        # Open Graph Updated Time
+client.ogLocale             # Open Graph Locale - for languages
 ```
 
 ### Options
