@@ -309,7 +309,7 @@ MetaInspector.prototype.fetch = function(){
 
 			_this.initAllProperties();
 
-			_this.emit("fetch");
+			_this.emit("fetch", _this);
 		}
 		else{
 			_this.emit("error", error);
