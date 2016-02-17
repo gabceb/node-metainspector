@@ -301,7 +301,7 @@ MetaInspector.prototype.fetch = function(){
 	var _this = this;
 	var totalChunks = 0;
 
-	var r = request({uri : this.url, gzip: true, maxRedirects: this.maxRedirects, timeout: this.timeout, strictSSL: this.strictSSL}, function(error, response, body){
+	var r = request({uri : this.url, gzip: true, maxRedirects: this.maxRedirects, timeout: this.timeout, strictSSL: this.strictSSL, headers: { 'User-Agent': 'MetaInspector/1.0' }} , function(error, response, body){
 		if(!error && response.statusCode === 200){
 			_this.document = body;
 			_this.parsedDocument = cheerio.load(body);
