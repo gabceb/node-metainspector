@@ -50,7 +50,7 @@ client.on("fetch", function(){
 });
 
 client.on("error", function(err){
-	console.log(error);
+	console.log(err);
 });
 
 client.fetch();
