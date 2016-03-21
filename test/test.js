@@ -25,7 +25,9 @@ describe('metainspector', function(){
 			secondClient.on('fetch', function(){
 				should.exists(secondClient.parsedDocument);
 
-				if (calledOnce) done();
+				if (calledOnce) {
+					done();
+				}
 			});
 
 			firstClient.fetch();
@@ -36,39 +38,57 @@ describe('metainspector', function(){
 	describe('client', function(){
 		var client = null;
 
-		it('should have a url property', function(done){
-			client = new MetaInspector("http://www.google.com");
+		describe('properties', function () {
+			it('should have a url property', function(done){
+				client = new MetaInspector("http://www.google.com");
 
-			client.url.should.equal("http://www.google.com/");
-			done();
-		});
+				client.url.should.equal("http://www.google.com/");
+				done();
+			});
 
-		it('should add http as the default scheme if no scheme is passed', function(done){
-			client = new MetaInspector("www.google.com");
+			it('should add http as the default scheme if no scheme is passed', function(done){
+				client = new MetaInspector("www.google.com");
 
-			client.url.should.equal("http://www.google.com/");
-			done();
-		});
+				client.url.should.equal("http://www.google.com/");
+				done();
+			});
 
-		it('should have a scheme property', function(done){
-			client = new MetaInspector("http://www.google.com");
+			it('should have a scheme property', function(done){
+				client = new MetaInspector("http://www.google.com");
 
-			client.scheme.should.equal("http");
-			done();
-		});
+				client.scheme.should.equal("http");
+				done();
+			});
 
-		it('should have a host property', function(done){
-			client = new MetaInspector("http://www.google.com");
+			it('should have a host property', function(done){
+				client = new MetaInspector("http://www.google.com");
 
-			client.host.should.equal("www.google.com");
-			done();
-		});
+				client.host.should.equal("www.google.com");
+				done();
+			});
 
-		it('should have a rootUrl property', function(done){
-			client = new MetaInspector("http://www.google.com");
+			it('should have a rootUrl property', function(done){
+				client = new MetaInspector("http://www.google.com");
 
-			client.rootUrl.should.equal("http://www.google.com");
-			done();
+				client.rootUrl.should.equal("http://www.google.com");
+				done();
+			});
+
+			it('should have a default headers property', function (done) {
+				client = new MetaInspector("http://www.google.com");
+
+				should.exists(client.headers);
+				client.headers['User-Agent'].should.be.equal('MetaInspector/1.0');
+				done();
+			});
+
+			it('should set headers property if provided', function (done) {
+				var myHeaders = {'User-Agent': 'pickles', 'Accept-Encoding': 'gzip, deflate, sdch'};
+				client = new MetaInspector("http://www.google.com", {headers: myHeaders});
+
+				client.headers.should.equal(myHeaders);
+				done();
+			});
 		});
 
 		it('should have a parsedDocument', function(done){
@@ -290,7 +310,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.techsuplex.com", {});
 
 			client.once("fetch", function() {
-				client.ogType.should.exist;
+				should.exists(client.ogType);
 				client.ogType.should.equal("article");
 				done();
 			});
@@ -302,7 +322,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.techsuplex.com", {});
 
 			client.once("fetch", function() {
-				client.ogUpdatedTime.should.exist;
+				should.exists(client.ogUpdatedTime);
 				client.ogUpdatedTime.should.equal("2013-10-31T09:29:46+00:00");
 				done();
 			});
@@ -314,7 +334,7 @@ describe('metainspector', function(){
 			client = new MetaInspector("http://www.techsuplex.com", {});
 
 			client.once("fetch", function() {
-				client.ogLocale.should.exist;
+				should.exists(client.ogLocale);
 				client.ogLocale.should.equal("en_US");
 				done();
 			});
