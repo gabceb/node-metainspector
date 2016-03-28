@@ -301,32 +301,47 @@ MetaInspector.prototype.fetch = function(){
 	var _this = this;
 	var totalChunks = 0;
 
-	var r = request({uri : this.url, gzip: true, maxRedirects: this.maxRedirects, timeout: this.timeout, strictSSL: this.strictSSL}, function(error, response, body){
-		if(!error && response.statusCode === 200){
-			_this.document = body;
-			_this.parsedDocument = cheerio.load(body);
-			_this.response = response;
+	getDocHead();
 
-			_this.initAllProperties();
-
-			_this.emit("fetch");
-		}
-		else{
-			_this.emit("error", error);
-		}
-	});
-
-	if(_this.options.limit){
-		_this.__stoppedAtLimit = false;
-		r.on('data', function(chunk){
-			totalChunks += chunk.length;
-			if(totalChunks > _this.options.limit){
-				if(!_this.__stoppedAtLimit) {
-					_this.emit("limit");
-					_this.__stoppedAtLimit = true;
-				}
-				r.abort();
+	function getDocHead() {
+		request.head({uri : _this.url, gzip: true, maxRedirects: _this.maxRedirects, timeout: _this.timeout, strictSSL: _this.strictSSL}, function(err, res, data) {
+			if(!err && res.statusCode === 200 && res.headers['content-type'] && res.headers['content-type'].indexOf('text/html') >= 0){
+				getDocument();
+			} else {
+				_this.emit("error", 'invalid data type');
 			}
 		});
+
+	}
+
+	function getDocument() {
+		var r = request.get({uri : _this.url, gzip: true, maxRedirects: _this.maxRedirects, timeout: _this.timeout, strictSSL: _this.strictSSL}, function(error, response, body){
+			if(!error && response.statusCode === 200){
+				_this.document = body;
+				_this.parsedDocument = cheerio.load(body);
+				_this.response = response;
+
+				_this.initAllProperties();
+
+				_this.emit("fetch");
+			}
+			else{
+				_this.emit("error", error);
+			}
+		});
+
+		if(_this.options.limit) {
+			_this.__stoppedAtLimit = false;
+			r.on('data', function (chunk) {
+				totalChunks += chunk.length;
+				if (totalChunks > _this.options.limit) {
+					if (!_this.__stoppedAtLimit) {
+						_this.emit("limit");
+						_this.__stoppedAtLimit = true;
+					}
+					r.abort();
+				}
+			});
+		}
 	}
 };
