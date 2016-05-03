@@ -1,6 +1,5 @@
 var util = require('util'),
 	request = require('request'),
-	jar = request.jar(),
 	events = require('events'),
 	cheerio = require('cheerio'),
 	URI = require('uri-js');
@@ -301,6 +300,7 @@ MetaInspector.prototype.getAbsolutePath = function(href){
 MetaInspector.prototype.fetch = function(){
 	var _this = this;
 	var totalChunks = 0;
+	var jar = request.jar();
 
 	getDocHead();
 
