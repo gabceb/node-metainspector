@@ -1,5 +1,6 @@
 var util = require('util'),
 	request = require('request'),
+	jar = request.jar(),
 	events = require('events'),
 	cheerio = require('cheerio'),
 	URI = require('uri-js');
@@ -304,7 +305,7 @@ MetaInspector.prototype.fetch = function(){
 	getDocHead();
 
 	function getDocHead() {
-		request.head({uri : _this.url, gzip: true, maxRedirects: _this.maxRedirects, timeout: _this.timeout, strictSSL: _this.strictSSL}, function(err, res, data) {
+		request.head({uri : _this.url, gzip: true, jar: jar, maxRedirects: _this.maxRedirects, timeout: _this.timeout, strictSSL: _this.strictSSL}, function(err, res, data) {
 			if(!err && res.statusCode === 200 && res.headers['content-type'] && res.headers['content-type'].indexOf('text/html') >= 0){
 				getDocument();
 			} else {
@@ -315,7 +316,7 @@ MetaInspector.prototype.fetch = function(){
 	}
 
 	function getDocument() {
-		var r = request.get({uri : _this.url, gzip: true, maxRedirects: _this.maxRedirects, timeout: _this.timeout, strictSSL: _this.strictSSL}, function(error, response, body){
+		var r = request.get({uri : _this.url, gzip: true, jar: jar, maxRedirects: _this.maxRedirects, timeout: _this.timeout, strictSSL: _this.strictSSL}, function(error, response, body){
 			if(!error && response.statusCode === 200){
 				_this.document = body;
 				_this.parsedDocument = cheerio.load(body);
