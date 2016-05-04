@@ -36,6 +36,8 @@ var MetaInspector = function(url, options){
 	this.timeout = this.options.timeout || 20000; //Timeout in ms
 
 	this.strictSSL = !!this.options.strictSSL;
+
+	this.headers = this.options.headers;
 };
 
 //MetaInspector.prototype = new events.EventEmitter();
@@ -305,7 +307,7 @@ MetaInspector.prototype.fetch = function(){
 	getDocHead();
 
 	function getDocHead() {
-		request.head({uri : _this.url, gzip: true, jar: jar, maxRedirects: _this.maxRedirects, timeout: _this.timeout, strictSSL: _this.strictSSL}, function(err, res, data) {
+		request.head({uri : _this.url, gzip: true, jar: jar, maxRedirects: _this.maxRedirects, timeout: _this.timeout, strictSSL: _this.strictSSL, headers: _this.headers}, function(err, res, data) {
 			if(!err && res.statusCode === 200 && res.headers['content-type'] && res.headers['content-type'].indexOf('text/html') >= 0){
 				getDocument();
 			} else {
@@ -316,7 +318,7 @@ MetaInspector.prototype.fetch = function(){
 	}
 
 	function getDocument() {
-		var r = request.get({uri : _this.url, gzip: true, jar: jar, maxRedirects: _this.maxRedirects, timeout: _this.timeout, strictSSL: _this.strictSSL}, function(error, response, body){
+		var r = request.get({uri : _this.url, gzip: true, jar: jar, maxRedirects: _this.maxRedirects, timeout: _this.timeout, strictSSL: _this.strictSSL, headers: _this.headers}, function(error, response, body){
 			if(!error && response.statusCode === 200){
 				_this.document = body;
 				_this.parsedDocument = cheerio.load(body);
