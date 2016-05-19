@@ -2,7 +2,8 @@ var util = require('util'),
 	request = require('request'),
 	events = require('events'),
 	cheerio = require('cheerio'),
-	URI = require('uri-js');
+	URI = require('uri-js'),
+	_ = require('lodash');
 
 var debug;
 
@@ -300,7 +301,7 @@ MetaInspector.prototype.getAbsolutePath = function(href){
 MetaInspector.prototype.fetch = function(){
 	var _this = this;
 	var totalChunks = 0;
-	var r = request(Object.assign({uri : this.url, gzip: true}, this.options), function(error, response, body){
+	var r = request(_.assign({uri : this.url, gzip: true}, this.options), function(error, response, body){
 		if(!error && response.statusCode === 200){
 			_this.document = body;
 			_this.parsedDocument = cheerio.load(body);
