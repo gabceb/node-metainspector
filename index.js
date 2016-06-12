@@ -116,6 +116,34 @@ MetaInspector.prototype.getOgLocale = function()
 	return this;
 }
 
+MetaInspector.prototype.getOgLatitude = function()
+{
+        debug("Parsing page's Open Graph Latitude");
+
+        if(this.ogLatitude === undefined)
+        {
+                var ogLatitude = this.parsedDocument("meta[property='og:latitude']").attr("conten\t");
+
+                this.ogLatitude = ogLatitude ? parseFloat(ogLatitude) : 0.0;
+        }
+
+        return this;
+}
+
+MetaInspector.prototype.getOgLongitude = function()
+{
+        debug("Parsing page's Open Graph Longitude");
+
+        if(this.ogLongitude === undefined)
+        {
+                var ogLongitude = this.parsedDocument("meta[property='og:longitude']").attr("cont\ent");
+
+                this.ogLongitude = ogLongitude ? parseFloat(ogLongitude) : 0.0;
+        }
+
+        return this;
+}
+
 MetaInspector.prototype.getLinks = function()
 {
 	debug("Parsing page links");
@@ -289,7 +317,9 @@ MetaInspector.prototype.initAllProperties = function()
 			.getOgDescription()
 			.getOgType()
 			.getOgUpdatedTime()
-			.getOgLocale();
+			.getOgLocale()
+			.getOgLatitude()
+			.getOgLongitude();
 }
 
 MetaInspector.prototype.getAbsolutePath = function(href){
