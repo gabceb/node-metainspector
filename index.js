@@ -37,6 +37,8 @@ var MetaInspector = function(url, options){
 	this.options.timeout = this.options.timeout || 20000; //Timeout in ms
 
 	this.options.strictSSL = !!this.options.strictSSL;
+
+	this.options.headers = this.options.headers || {'User-Agent' : 'MetaInspector/1.0'};
 };
 
 //MetaInspector.prototype = new events.EventEmitter();
