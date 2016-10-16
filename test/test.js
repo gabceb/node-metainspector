@@ -192,6 +192,28 @@ describe('metainspector', function(){
 			client.fetch();
 		});
 
+		it('should have a og:image:width', function(done){
+			client = new MetaInspector("http://www.fastandfurious7-film.com");
+
+			client.once("fetch", function(){
+				client.imageWidth.should.equal("800");
+				done();
+			});
+
+			client.fetch();
+		});
+
+		it('should have a og:image:height', function(done){
+			client = new MetaInspector("http://www.fastandfurious7-film.com");
+
+			client.once("fetch", function(){
+				client.imageHeight.should.equal("600");
+				done();
+			});
+
+			client.fetch();
+		});
+
 		it('should have a og:description', function(done){
 			client = new MetaInspector("http://www.fastandfurious7-film.com");
 

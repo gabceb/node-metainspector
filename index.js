@@ -237,6 +237,30 @@ MetaInspector.prototype.getImage = function()
 	return this;
 }
 
+MetaInspector.prototype.getImageWidth = function()
+{
+	debug("Parsing page image width based on the Open Graph image width");
+
+	if(!this.imageWidth)
+	{
+		this.imageWidth = this.parsedDocument("meta[property='og:image:width']").attr("content");
+	}
+
+	return this;
+}
+
+MetaInspector.prototype.getImageHeight = function()
+{
+	debug("Parsing page image height based on the Open Graph image height");
+
+	if(!this.imageHeight)
+	{
+		this.imageHeight = this.parsedDocument("meta[property='og:image:height']").attr("content");
+	}
+
+	return this;
+}
+
 MetaInspector.prototype.getImages = function()
 {
 	debug("Parsing page body images");
@@ -285,6 +309,8 @@ MetaInspector.prototype.initAllProperties = function()
 			.getLinks()
 			.getDescription()
 			.getImage()
+			.getImageWidth()
+			.getImageHeight()
 			.getImages()
 			.getFeeds()
 			.getOgTitle()
