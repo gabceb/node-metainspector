@@ -1,5 +1,5 @@
 ![status](https://secure.travis-ci.org/gabceb/node-metainspector.png?branch=master)
-
+[![Known Vulnerabilities](https://snyk.io/test/github/gabceb/node-metainspector/368958cf0680a40dac5ac99448ca09fb068cb29f/badge.svg)](https://snyk.io/test/github/gabceb/node-metainspector/368958cf0680a40dac5ac99448ca09fb068cb29f)
 ## Node-Metainspector
 
 MetaInspector is an npm package for web scraping purposes. You give it an URL, and it lets you easily get its title, links, images, description, keywords, meta tags....
