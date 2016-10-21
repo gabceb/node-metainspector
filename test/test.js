@@ -321,5 +321,28 @@ describe('metainspector', function(){
 
 			client.fetch();
 		});
+
+		it('should return the open graph url if defined', function(done){
+			client = new MetaInspector("http://www.simple.com", {});
+
+			client.once("fetch", function(){
+				client.ogUrl.should.exist;
+				client.ogUrl.should.equal("http://www.cnn.com");
+				done();
+			});
+
+			client.fetch();
+		});
+
+		it('should return undefined if there is no og:url', function(done){
+			client = new MetaInspector("http://www.google.com", {});
+
+			client.once("fetch", function(){
+				should.not.exist(client.ogUrl);
+				done();
+			});
+
+			client.fetch();
+		});
 	});
 });

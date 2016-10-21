@@ -118,6 +118,18 @@ MetaInspector.prototype.getOgLocale = function()
 	return this;
 }
 
+MetaInspector.prototype.getOgUrl = function()
+{
+	debug("Parsing page url based on the Open Graph url");
+
+	if(!this.ogUrl)
+	{
+		this.ogUrl = this.parsedDocument("meta[property='og:url']").attr("content");
+	}
+
+	return this;
+}
+
 MetaInspector.prototype.getLinks = function()
 {
 	debug("Parsing page links");
@@ -291,7 +303,8 @@ MetaInspector.prototype.initAllProperties = function()
 			.getOgDescription()
 			.getOgType()
 			.getOgUpdatedTime()
-			.getOgLocale();
+			.getOgLocale()
+			.getOgUrl();
 }
 
 MetaInspector.prototype.getAbsolutePath = function(href){
