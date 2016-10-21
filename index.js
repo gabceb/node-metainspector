@@ -124,10 +124,7 @@ MetaInspector.prototype.getOgUrl = function()
 
 	if(!this.ogUrl)
 	{
-		var url = this.parsedDocument("meta[property='og:url']").attr("content");
-		if (url){
-			this.ogUrl = this.getAbsolutePath(url);
-		}
+		this.ogUrl = this.parsedDocument("meta[property='og:url']").attr("content");
 	}
 
 	return this;
