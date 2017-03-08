@@ -12,7 +12,8 @@ Metainspector is inspired by the Metainspector gem by [jaimeiniesta](https://git
 client.url                  # URL of the page
 client.scheme               # Scheme of the page (http, https)
 client.host                 # Hostname of the page (like, markupvalidator.com, without the scheme)
-client.rootUrl              # Root url (scheme + host, i.e http://simple.com/)
+client.port                 # Port number of the page, as number (undefined if url doesn't specify port)
+client.rootUrl              # Root url (scheme + host + port, i.e http://simple.com:8000/ or http://simple.com/ if no port specified)
 client.title                # title of the page, as string
 client.links                # array of strings, with every link found on the page as an absolute URL
 client.author               # page author, as string

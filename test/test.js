@@ -64,10 +64,38 @@ describe('metainspector', function(){
 			done();
 		});
 
+		it('should not include port number in host', function(done){
+			client = new MetaInspector("http://www.google.com:8000");
+
+			client.host.should.equal("www.google.com");
+			done();
+		});
+
+		it('should have a port property', function(done){
+			client = new MetaInspector("http://www.google.com:8000");
+
+			client.port.should.equal(8000);
+			done();
+		});
+
+		it('port should be undefined if not specified in original url', function(done){
+			client = new MetaInspector("http://www.google.com");
+
+			should.equal(client.port, undefined);
+			done();
+		});
+
 		it('should have a rootUrl property', function(done){
 			client = new MetaInspector("http://www.google.com");
 
 			client.rootUrl.should.equal("http://www.google.com");
+			done();
+		});
+
+		it('should include port number in rootUrl if specified in original url', function(done){
+			client = new MetaInspector("http://www.google.com:8000");
+
+			client.rootUrl.should.equal("http://www.google.com:8000");
 			done();
 		});
 

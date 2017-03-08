@@ -25,7 +25,12 @@ var MetaInspector = function(url, options){
 	this.parsedUrl = URI.parse(this.url);
 	this.scheme = this.parsedUrl.scheme;
 	this.host = this.parsedUrl.host;
+	this.port = this.parsedUrl.port;
 	this.rootUrl = this.scheme + "://" + this.host;
+	this.rootUrl = this.scheme + "://" + this.host;
+	if (!_.isNil(this.port)) {
+		this.rootUrl += ":" + this.port;
+	}
 
 	this.options = options || {};
 	//default to a sane limit, since for meta-inspector usually 5 redirects should do a job
