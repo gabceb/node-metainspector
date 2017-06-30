@@ -225,6 +225,15 @@ describe('metainspector', function(){
 			client.fetch();
 		});
 
+		it("should ignore any p tag with embedded script tag(s) when searching for secondary description", function (done) {
+			client = new MetaInspector("http://scriptinptag.html", {});
+			client.once("fetch", function(){
+				client.description.should.equal("World War II, which began in 1939 and ended in 1945, was the deadliest and most destructive war in history. Before the war, Germany, America, and the rest of the world were going through the Great Depression. The economy was very bad, unemployment was at an all-time high, and massive inflation caused money to lose its value. More than fifty nations in the world were fighting, with more than 100 million soldiers deployed. Countries like America and Britain were part of the Allied powers. Japan and Germany were part of the Axis powers.");
+				done();
+			});
+			client.fetch();
+		});
+
 		it('should find a the image based on the og:image tag if defined', function(done){
 			client = new MetaInspector("http://www.simple.com", {});
 
@@ -275,11 +284,10 @@ describe('metainspector', function(){
 			client.fetch();
 		});
 
-		it('should emit errors', function(done){
-			client = new MetaInspector("http://www.google-404.com/", {});
+		it('should emit errors on http error response', function(done){
+			client = new MetaInspector("http://www.404-response.com", {});
 
 			client.once("error", function(error){
-				should.exists(error);
 				done();
 			});
 
