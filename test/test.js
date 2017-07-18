@@ -321,5 +321,16 @@ describe('metainspector', function(){
 
 			client.fetch();
 		});
+
+		it('should return og:description in cp1251 encoding', function(done){
+			client = new MetaInspector("http://www.vk.com", {});
+
+			client.once("fetch", function() {
+				client.ogDescription.should.equal("ECMAScript 6 для разработчиков (2017) <br>Автор: Николас Закас <br> <br>#javascript@proglib #web@proglib #book@proglib <br> <br>Познакомьтесь с радикальными изменениями в языке JavaScript, которые произошли благодаря новому стандарту ECMAScript 6. Николас Закас - автор бестселлеров и эксперт-разр..");
+				done();
+			});
+
+			client.fetch();
+		});
 	});
 });
