@@ -275,6 +275,36 @@ MetaInspector.prototype.parseFeeds = function(format)
 	return feeds;
 }
 
+MetaInspector.prototype.getFavicons = function()
+{
+	debug("Parsing page favicons");
+
+	if(!this.favicons)
+	{
+		this.favicons = this.parseFavicons("shortcut icon").concat(
+			this.parseFavicons("icon"),
+			this.parseFavicons("apple-touch-icon")
+		);
+	}
+
+	return this;
+}
+
+MetaInspector.prototype.parseFavicons = function(format)
+{
+	var _this = this;
+	var favicons = this.parsedDocument("link[rel='" + format + "']").map(function(i ,elem){
+		var href = _this.parsedDocument(this).attr('href');
+		var sizes = _this.parsedDocument(this).attr('sizes');
+		return {
+			href: _this.getAbsolutePath(href),
+			sizes: sizes || ''
+		};
+	});
+
+	return [].slice.call(favicons);
+}
+
 MetaInspector.prototype.initAllProperties = function()
 {
 	// title of the page, as string
@@ -287,6 +317,7 @@ MetaInspector.prototype.initAllProperties = function()
 			.getImage()
 			.getImages()
 			.getFeeds()
+			.getFavicons()
 			.getOgTitle()
 			.getOgDescription()
 			.getOgType()

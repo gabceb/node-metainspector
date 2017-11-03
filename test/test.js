@@ -264,6 +264,17 @@ describe('metainspector', function(){
 			client.fetch();
 		});
 
+		it('should return the favicons if defined', function(done){
+			client = new MetaInspector("http://www.fastandfurious7-film.com", {});
+
+			client.once("fetch", function(){
+				client.favicons.length.should.equal(14);
+				done();
+			});
+
+			client.fetch();
+		});
+
 		it('should return the open graph title if defined', function(done){
 			client = new MetaInspector("http://www.simple.com", {});
 
