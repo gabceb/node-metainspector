@@ -141,6 +141,7 @@ MetaInspector.prototype.getMetaDescription = function()
 	if(!this.description)
 	{
 		this.description = this.parsedDocument("meta[name='description']").attr("content");
+		this.descriptionPresent = true;
 	}
 
 	return this;
@@ -154,6 +155,7 @@ MetaInspector.prototype.getSecondaryDescription = function()
 	if(!this.description)
 	{
 		var minimumPLength = 120;
+		this.descriptionPresent = false;
 
 		this.parsedDocument("p").each(function(i, elem){
 			if(_this.description){
