@@ -140,7 +140,7 @@ MetaInspector.prototype.getMetaDescription = function()
 
 	if(!this.description)
 	{
-		this.description = this.parsedDocument("meta[name='description']").attr("content");
+		this.description = this.parsedDocument("meta[name='description']").attr("content") || this.parsedDocument("meta[name='Description']").attr("content");
 		this.descriptionPresent = true;
 	}
 
