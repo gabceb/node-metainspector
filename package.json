@@ -20,7 +20,8 @@
     "should": "^7.0.1"
   },
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "lint": "grunt jshint"
   },
   "engines": {
     "node": ">= 4"
