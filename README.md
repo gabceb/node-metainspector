@@ -6,6 +6,8 @@ MetaInspector is an npm package for web scraping purposes. You give it an URL, a
 
 Metainspector is inspired by the Metainspector gem by [jaimeiniesta](https://github.com/jaimeiniesta/metainspector)
 
+This version requires node v6 or higher, as some dependencies make use of various bits of ES6 functionality. The 1.x.x versions are compatible with v0.x - v4 releases of node, and should be used instead for older applications.
+
 ### Scraped data
 
 ```
